@@ -29,3 +29,9 @@ export const backgrounds: Record<string, BackgroundImage> = {
     backgroundColor: '#25215c',
   }
 }
+
+export const blobs = {
+  punting: require('@/assets/blobs/punting blob.png'),
+  no_punt: require('@/assets/blobs/no punting blob.png'),
+  night: require('@/assets/blobs/sleeping blob.png'),
+}

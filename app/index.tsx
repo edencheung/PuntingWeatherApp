@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Dimensions, ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import { backgrounds } from "@/constants";
+import { backgrounds, blobs } from "@/constants";
 import { fetchWeather } from "@/lib/api";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -44,7 +44,7 @@ export default function Index() {
       {/* Blobby */}
       <View style={styles.backgroundContainer}>
         <ImageBackground
-          source={require('@/assets/blobs/punting blob.png')}
+          source={blobs.punting}
           style={styles.backgroundImage}
         />
       </View>
