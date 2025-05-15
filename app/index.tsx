@@ -29,7 +29,8 @@ export default function Index() {
       style={{ flex: 1 }}
       contentContainerStyle={styles.scrollView}
       bounces={false}
-      showsVerticalScrollIndicator={false}
+      showsVerticalScrollIndicator={true}
+      pagingEnabled={true}
     >
 
       {/* Background image and fill */}
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
   },
   backgroundColorFill: {
     width: '100%',
-    height: SCREEN_HEIGHT * 0.8,
+    height: SCREEN_HEIGHT * 0.76,
     backgroundColor: backgrounds.sunny.backgroundColor,
   },
   scrollView: {
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: 'flex-start',
     width: '100%',
-    height: SCREEN_HEIGHT * 1.8,
+    height: SCREEN_HEIGHT * 1.76,
     paddingTop: 0,
   },
 });
