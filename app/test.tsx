@@ -1,27 +1,33 @@
-import { Button, Dimensions, ScrollView, StyleSheet, View } from "react-native";
+import { Button, Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 
-import { fetchWeather } from "@/lib/api";
-
+import { fetchWeather } from '@/lib/api';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 async function fetchHello() {
-    const weather = fetchWeather();
-    console.log(process.env.EXPO_PUBLIC_API_KEY);
-    console.log(weather);
-  }
+  const weather = fetchWeather();
+  console.log(process.env.EXPO_PUBLIC_API_KEY);
+  console.log(weather);
+}
 
 export default function Index() {
-
   return (
     <ScrollView
       style={{ flex: 1 }}
       contentContainerStyle={styles.scrollView}
       bounces={false}
     >
-    <View style={{ flex: 0.8, alignItems: "center", justifyContent: 'flex-start', paddingTop: 0, backgroundColor: 'transparent' }}>
-      <Button onPress={() => fetchHello()} title="Fetch hello" />
-    </View>
+      <View
+        style={{
+          flex: 0.8,
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          paddingTop: 0,
+          backgroundColor: 'transparent',
+        }}
+      >
+        <Button onPress={() => fetchHello()} title="Fetch hello" />
+      </View>
     </ScrollView>
   );
 }
@@ -37,7 +43,7 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     width: '100%',
-    aspectRatio: 395/882
+    aspectRatio: 395 / 882,
   },
   backgroundColorFill: {
     width: '100%',
@@ -46,7 +52,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 1,
-    alignItems: "center",
+    alignItems: 'center',
     justifyContent: 'flex-start',
     width: '100%',
     height: SCREEN_HEIGHT * 1.8,

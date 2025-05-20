@@ -1,6 +1,6 @@
-import { HourlyWeatherData, PuntingScore } from "@/types/punting";
+import { HourlyWeatherData, PuntingScore } from '@/types/punting';
 
-export function getCurrentPuntingScore(): PuntingScore{
+export function getCurrentPuntingScore(): PuntingScore {
   // TODO
 }
 

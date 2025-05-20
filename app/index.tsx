@@ -1,41 +1,41 @@
 // This file is the main page of our app
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Dimensions,
   ImageBackground,
   ScrollView,
   StyleSheet,
   View,
-} from "react-native";
+} from 'react-native';
 
-import { CentralDisplay } from "@/components/CentralDisplay";
-import { ForecastBar } from "@/components/ForecastBar";
+import { CentralDisplay } from '@/components/CentralDisplay';
+import { ForecastBar } from '@/components/ForecastBar';
 import {
   backgroundConditionImages,
   backgroundImages,
   blobBodyImages,
   blobFaceImages,
-} from "@/constants";
-import { fetchWeather } from "@/lib/api";
+} from '@/constants';
+import { fetchWeather } from '@/lib/api';
 import {
   BackgroundCondition,
   BackgroundType,
   BlobFace,
   BlobState,
-} from "@/types/background";
-import { WeatherResponse } from "@/types/weather";
+} from '@/types/background';
+import { WeatherResponse } from '@/types/weather';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function Index() {
   let [weatherData, setWeatherData] = useState<WeatherResponse | null>(null);
-  let [background, setBackground] = useState<BackgroundType>("sunny");
+  let [background, setBackground] = useState<BackgroundType>('sunny');
   let [backgroundConditions, setBackgroundConditions] = useState<
     BackgroundCondition[]
   >([]);
-  let [blobState, setBlobState] = useState<BlobState>("punting");
-  let [blobFace, setBlobFace] = useState<BlobFace>("happy");
+  let [blobState, setBlobState] = useState<BlobState>('punting');
+  let [blobFace, setBlobFace] = useState<BlobFace>('happy');
 
   useEffect(() => {
     if (weatherData === null) {
@@ -44,7 +44,7 @@ export default function Index() {
           setWeatherData(data);
         })
         .catch((error) => {
-          console.error("Error fetching weather data:", error);
+          console.error('Error fetching weather data:', error);
         });
     }
   }, []);
@@ -115,26 +115,26 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   backgroundContainer: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
-    width: "100%",
+    width: '100%',
     height: SCREEN_HEIGHT * 1.8,
     zIndex: -1,
   },
   backgroundImage: {
-    width: "100%",
+    width: '100%',
     aspectRatio: 395 / 882,
   },
   backgroundColorFill: {
-    width: "100%",
+    width: '100%',
     height: SCREEN_HEIGHT * 0.76,
   },
   scrollView: {
     flexGrow: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    width: "100%",
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width: '100%',
     height: SCREEN_HEIGHT * 1.76,
     paddingTop: 0,
   },

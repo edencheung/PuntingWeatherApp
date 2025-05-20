@@ -1,6 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export type NotificationPrefOptions = "weekly" | "good" | "never";
+export type NotificationPrefOptions = 'weekly' | 'good' | 'never';
 
 export interface UserPrefs {
   presenceOfSun: number;
