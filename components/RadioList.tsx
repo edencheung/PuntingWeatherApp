@@ -1,8 +1,8 @@
 import { Text, View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
-export default function RadioList({ data, onSelect, selectedId, horizontal }: 
-    { data: { text: string; id: string; }[], onSelect: (id: string) => void, selectedId: string, horizontal: boolean }) {
+export default function RadioList<T extends number | string>({ data, onSelect, selectedId, horizontal }: 
+    { data: { text: string; id: T; }[], onSelect: (id: T) => void, selectedId: T, horizontal: boolean }) {
     return (
         <View style={{ display: "flex", flexDirection: horizontal ? "row" : "column"}}>
             {data.map((item) => (
