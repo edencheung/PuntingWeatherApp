@@ -1,9 +1,7 @@
+import { WeatherResponse } from '@/types/weather';
 import { fetch } from 'expo/fetch';
 
-// TODO: make this a interface
-
-
-const fetchWeather = async () => {
+export async function fetchWeather(): Promise<WeatherResponse> {
     const params = new URLSearchParams({
         key: process.env.EXPO_PUBLIC_API_KEY || "",
         q: "CB2",
@@ -12,8 +10,5 @@ const fetchWeather = async () => {
     });
     const res = await fetch(`http://api.weatherapi.com/v1/forecast.json?${params}`);
     const json = await res.json();
-    return json;
+    return json as WeatherResponse;
 };
-
-export { fetchWeather };
-

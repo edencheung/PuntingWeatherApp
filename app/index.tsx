@@ -1,16 +1,24 @@
 // This file is the main page of our app
 
 import { useEffect, useState } from "react";
-import { Dimensions, ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Dimensions, ImageBackground, ScrollView, StyleSheet, View } from "react-native";
 
-import { backgrounds, blobs } from "@/constants";
+import { CentralDisplay } from "@/components/CentralDisplay";
+import { ForecastBar } from "@/components/ForecastBar";
+import { backgroundConditionImages, backgroundImages, blobBodyImages, blobFaceImages } from "@/constants";
 import { fetchWeather } from "@/lib/api";
+import { BackgroundCondition, BackgroundType, BlobFace, BlobState } from "@/types/background";
+import { WeatherResponse } from "@/types/weather";
 
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 
 export default function Index() {
-  let [weatherData, setWeatherData] = useState(null);
+  let [weatherData, setWeatherData] = useState<WeatherResponse | null>(null);
+  let [background, setBackground] = useState<BackgroundType>('sunny');
+  let [backgroundConditions, setBackgroundConditions] = useState<BackgroundCondition[]>([]);
+  let [blobState, setBlobState] = useState<BlobState>('punting');
+  let [blobFace, setBlobFace] = useState<BlobFace>('happy');
   
   useEffect(() => {
     if (weatherData === null) {
@@ -29,23 +37,41 @@ export default function Index() {
       style={{ flex: 1 }}
       contentContainerStyle={styles.scrollView}
       bounces={false}
-      showsVerticalScrollIndicator={true}
+      showsVerticalScrollIndicator={false}
       pagingEnabled={true}
     >
 
       {/* Background image and fill */}
       <View style={styles.backgroundContainer}>
         <ImageBackground
-          source={backgrounds.sunny.imageImport}
+          source={backgroundImages[background].imageImport}
           style={styles.backgroundImage}
         />
-        <View style={styles.backgroundColorFill} />
+        <View style={{...styles.backgroundColorFill, backgroundColor: backgroundImages[background].backgroundColor}} />
       </View>
 
+      {/* Background conditions */}
+      {
+        backgroundConditions.map((condition, index) => (
+          <View style={styles.backgroundContainer} key = {index}>
+            <ImageBackground
+              source={backgroundConditionImages[condition]}
+              style={styles.backgroundImage}
+            />
+          </View>
+        ))
+      }
+      
       {/* Blobby */}
       <View style={styles.backgroundContainer}>
         <ImageBackground
-          source={blobs.punting}
+          source={blobBodyImages[blobState]}
+          style={styles.backgroundImage}
+        />
+      </View>
+      <View style={styles.backgroundContainer}>
+        <ImageBackground
+          source={blobFaceImages[blobFace]}
           style={styles.backgroundImage}
         />
       </View>
@@ -54,26 +80,18 @@ export default function Index() {
       <View style={{ height: SCREEN_HEIGHT * 0.065}}></View>
 
       {/* Container for settings button and spacer for middle info */}
-      <View style={{ height: SCREEN_HEIGHT * 0.1 }}> </View>
+      <View style={{ height: SCREEN_HEIGHT * 0.1 }}></View>
 
       {/* Container for middle info */}
-      <View style={{ height: SCREEN_HEIGHT * 0.25, alignItems: "center", justifyContent: 'flex-start', paddingTop: 0, backgroundColor: 'transparent' }}>
-        <Text style={{ fontSize: 24, color: 'black' }}>11th May | Best time 1:48 pm</Text>
-        <Text style={{ fontSize: 24, color: 'black' }}>Hello World</Text>
-        <Text style={{ fontSize: 24, color: 'black' }}>Hello World</Text>
-        <Text style={{ fontSize: 24, color: 'black' }}>Hello World</Text>
-        <Text style={{ fontSize: 24, color: 'black' }}>Hello World</Text>
-      </View>
+      <CentralDisplay/>
 
       {/* Spacer for bloby */}
       <View style={{ height: SCREEN_HEIGHT * 0.43}}></View>
 
       {/* Container for forecast bar */}
-      <View style={{ height: SCREEN_HEIGHT * 0.1, width: '90%', backgroundColor: 'blue' }}>
-        <Text style={{ fontSize: 24, color: 'white' }}>Bottom bar</Text>
-      </View>
+      <ForecastBar />
 
-    </ ScrollView>
+    </ScrollView>
   );
 }
 
@@ -93,7 +111,6 @@ const styles = StyleSheet.create({
   backgroundColorFill: {
     width: '100%',
     height: SCREEN_HEIGHT * 0.76,
-    backgroundColor: backgrounds.sunny.backgroundColor,
   },
   scrollView: {
     flexGrow: 1,
