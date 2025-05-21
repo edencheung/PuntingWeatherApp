@@ -8,7 +8,7 @@ export async function fetchWeather(): Promise<WeatherResponse> {
         days: "7",
 
     });
-    const res = await fetch(`http://api.weatherapi.com/v1/forecast.json?${params}`);
+    const res = await fetch(`https://api.weatherapi.com/v1/forecast.json?${params}`);
     const json = await res.json();
     return json as WeatherResponse;
 };

@@ -1,17 +1,20 @@
 // This file is the settings page of our app
 
+import Slider from '@react-native-community/slider';
 import { useEffect, useState } from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { Dimensions, ImageBackground, StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
 import RadioList from "@/components/RadioList";
 import { backgroundImages } from "@/constants";
 import { getUserPrefs, updateUserPrefs, UserPrefs } from "@/lib/preferences";
+import { BackgroundType } from "@/types/background";
+import { useLocalSearchParams } from "expo-router";
 
-const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 export default function Settings() {
-
+  const { background } = useLocalSearchParams<{ background?: BackgroundType }>();
 
   const [preferences, onPreferenceChange] = useState<UserPrefs>({
     presenceOfSun: 3,
@@ -52,6 +55,13 @@ export default function Settings() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.backgroundContainer}>
+        <ImageBackground
+          source={backgroundImages[background || "sunny"].imageImport}
+          style={styles.backgroundImage}
+        />
+      </View>
+
       {/* Spacer for camera bump */}
       <View style={{ height: SCREEN_HEIGHT * 0.065 }}></View>
 
@@ -67,6 +77,7 @@ export default function Settings() {
           justifyContent: "flex-start",
           paddingTop: 0,
           backgroundColor: "transparent",
+          display: "flex",
         }}
       >
         <View style={styles.blurContainer}>
@@ -111,6 +122,14 @@ export default function Settings() {
             </View>
           ))}
           <Text>Set your ideal temperature:</Text>
+          {/* <Slider
+            style={{width: 200, height: 40}}
+            minimumValue={0}
+            maximumValue={1}
+            minimumTrackTintColor="#FFFFFF"
+            maximumTrackTintColor="#000000"
+          /> */}
+          <Text>Test</Text>
           <RadioList
             data={[
               { text: "20", id: 20 },
@@ -161,11 +180,11 @@ const styles = StyleSheet.create({
     paddingTop: 0,
   },
   blurContainer: {
-    backgroundColor: "lightgrey",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
     padding: 20,
-    opacity: 30,
     borderRadius: 10,
-    backdropFilter: "blur(10px)",
+    backdropFilter: "blur(100px)",
     marginTop: 15,
+    width: SCREEN_WIDTH * 0.9,
   },
 });
