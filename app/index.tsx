@@ -19,25 +19,31 @@ import {
   blobFaceImages,
 } from '@/constants';
 import { fetchWeather } from '@/lib/api';
+import { getHourlyWeatherData } from '@/lib/weatherDetails';
 import {
   BackgroundCondition,
   BackgroundType,
   BlobFace,
   BlobState,
 } from '@/types/background';
+import { HourlyWeatherData } from '@/types/punting';
 import { WeatherResponse } from '@/types/weather';
-import { useRouter } from 'expo-router';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function Index() {
-  let [weatherData, setWeatherData] = useState<WeatherResponse | null>(null);
   let [background, setBackground] = useState<BackgroundType>('sunny');
   let [backgroundConditions, setBackgroundConditions] = useState<
     BackgroundCondition[]
   >([]);
   let [blobState, setBlobState] = useState<BlobState>('punting');
   let [blobFace, setBlobFace] = useState<BlobFace>('happy');
+
+  // 0 for now, then number of dates in the future.
+  let [dateDelta, setDateDelta] = useState<number>(0);
+  let [weatherData, setWeatherData] = useState<WeatherResponse>();
+  let [hourlyGraphData, setHourlyGraphData] =
+    useState<Record<number, HourlyWeatherData>>();
 
   useEffect(() => {
     if (weatherData === null) {
@@ -51,7 +57,10 @@ export default function Index() {
     }
   }, []);
 
-  const router = useRouter();
+  useEffect(() => {
+    if (!weatherData) return;
+    setHourlyGraphData(getHourlyWeatherData(weatherData, dateDelta));
+  }, [dateDelta, weatherData]);
 
   return (
     <ScrollView

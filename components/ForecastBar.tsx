@@ -4,7 +4,7 @@ import { Dimensions, ScrollView, Text, View } from 'react-native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-export function ForecastBar() {
+export function ForecastBar(setDateDelta: (dateDelta: number) => void) {
   return (
     <View
       style={{
