@@ -190,11 +190,36 @@ export function WeatherGraph() {
         {Object.keys(mockGraphData).length > 0 ? (
           <View style={styles.graph}>
             {' '}
-            {/* Y-axis vertical bar */}
+            {/* Y-axis vertical bar */} {/* Grid Lines */}
+            <View style={styles.gridContainer}>
+              {' '}
+              {/* Horizontal grid lines */}
+              {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => (
+                <View
+                  key={`h-${i}`}
+                  style={[
+                    styles.gridLine,
+                    styles.horizontalLine,
+                    { bottom: `${ratio * 100}%` },
+                  ]}
+                />
+              ))}
+              {/* Vertical grid lines */}
+              {[0, 6, 12, 18, 24].map((_, i) => (
+                <View
+                  key={`v-${i}`}
+                  style={[
+                    styles.gridLine,
+                    styles.verticalLine,
+                    { left: `${i * 25}%` },
+                  ]}
+                />
+              ))}
+            </View>
             <View style={styles.yAxis}>
-              <View style={styles.yAxisLine}></View>
-              {/* Render labels for 25%, 50%, 75%, 100% */}
-              {[0.25, 0.5, 0.75, 1].map((ratio, i) => {
+              <View style={styles.yAxisLine}></View>{' '}
+              {/* Render labels for all values including 0 */}
+              {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
                 const max = getGraphRange()?.y.max || 100;
                 const value = max * ratio;
 
@@ -207,11 +232,6 @@ export function WeatherGraph() {
                   </View>
                 );
               })}
-
-              {/* Special rendering for 0 label positioned higher than actual 0 point */}
-              <View style={styles.yAxisZeroTick}>
-                <Text style={styles.yAxisLabel}>0</Text>
-              </View>
             </View>{' '}
             <LineGraph
               style={styles.lineGraph}
@@ -258,6 +278,28 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
   },
+  gridContainer: {
+    position: 'absolute',
+    left: 45,
+    right: 0,
+    top: 0,
+    bottom: 25 /* Match the graph and y-axis bottom spacing */,
+    zIndex: 1,
+  },
+  gridLine: {
+    position: 'absolute',
+    backgroundColor: 'rgba(0, 0, 0, 0.08)',
+  },
+  horizontalLine: {
+    left: 0,
+    right: 0,
+    height: 1,
+  },
+  verticalLine: {
+    top: 0,
+    bottom: 0,
+    width: 1,
+  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -294,12 +336,14 @@ const styles = StyleSheet.create({
   graph: {
     flex: 1,
     position: 'relative',
-    paddingBottom: 25 /* Increased from 20 to 25 to accommodate larger labels */,
+    paddingBottom: 25 /* Space for x-axis */,
   },
   lineGraph: {
-    flex: 1,
-    height: '100%',
-    marginLeft: 45 /* Increased to match new x-axis position */,
+    position: 'absolute',
+    top: 0,
+    left: 45,
+    right: 0,
+    bottom: 25 /* Match the paddingBottom of graph */,
   },
   loadingText: {
     textAlign: 'center',
@@ -310,7 +354,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-    bottom: 0,
+    bottom: 25 /* Match the graph padding bottom */,
     width: 45 /* Increased to match new left margin */,
     zIndex: 10,
   },
@@ -332,21 +376,14 @@ const styles = StyleSheet.create({
   yAxisLabel: {
     position: 'absolute',
     right: 30,
-    fontSize: 12 /* Increased from 8 to 12 */,
+    fontSize: 12,
     color: '#555',
-  },
-  yAxisZeroTick: {
-    position: 'absolute',
-    right: 0,
-    width: 25,
-    height: 0,
-    bottom: 15 /* Position 15px from bottom (above x-axis) */,
   },
   xAxis: {
     position: 'absolute',
     left: 45 /* Increased from 35 to 45 to prevent overlap with y-axis labels */,
     right: 0,
-    bottom: -30,
+    bottom: 0,
     height: 25,
     zIndex: 10,
   },
