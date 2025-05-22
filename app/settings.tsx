@@ -76,7 +76,7 @@ export default function Settings() {
       <View style={{ height: SCREEN_HEIGHT * 0.1 }}></View>
 
       {/* Container for middle info */}
-      {prefsLoaded ? (
+      {/* {prefsLoaded ? (
         <View
           style={{
             height: SCREEN_HEIGHT * 0.25,
@@ -151,7 +151,7 @@ export default function Settings() {
         </View>
       ) : (
         <ActivityIndicator size="large" animating={true} />
-      )}
+      )} */}
       {prefsLoaded ? (
         <View
           style={{
