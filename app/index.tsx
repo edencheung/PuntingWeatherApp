@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import {
+  Button,
   Dimensions,
   ImageBackground,
   ScrollView,
@@ -25,6 +26,7 @@ import {
   BlobState,
 } from '@/types/background';
 import { WeatherResponse } from '@/types/weather';
+import { useRouter } from 'expo-router';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -48,6 +50,8 @@ export default function Index() {
         });
     }
   }, []);
+
+  const router = useRouter();
 
   return (
     <ScrollView
@@ -99,7 +103,12 @@ export default function Index() {
       <View style={{ height: SCREEN_HEIGHT * 0.065 }}></View>
 
       {/* Container for settings button and spacer for middle info */}
-      <View style={{ height: SCREEN_HEIGHT * 0.1 }}></View>
+      <View style={{ height: SCREEN_HEIGHT * 0.1 }}>
+        <Button
+          title="Settings"
+          onPress={() => router.navigate(`/settings?background=${background}`)}
+        />
+      </View>
 
       {/* Container for middle info */}
       <CentralDisplay />

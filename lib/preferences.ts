@@ -15,7 +15,7 @@ export async function updateUserPrefs(prefs: UserPrefs) {
   await AsyncStorage.setItem('usersPrefs', JSON.stringify(prefs));
 }
 
-export async function getUserPrefs() {
+export async function getUserPrefs(): Promise<UserPrefs | null> {
   const jsonValue = await AsyncStorage.getItem('usersPrefs');
   return jsonValue != null ? JSON.parse(jsonValue) : null;
 }
