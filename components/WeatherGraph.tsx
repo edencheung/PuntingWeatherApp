@@ -7,44 +7,34 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 type DataType = 'temperature' | 'wind' | 'rain';
 
-// Generate realistic mock data for the graph
 const generateMockData = (): Record<number, HourlyWeatherData> => {
   const mockData: Record<number, HourlyWeatherData> = {};
-
-  // Temperature curve - warmer during midday, cooler at night
   const tempBaseline = 15;
   const tempVariation = 10;
-
-  // Wind pattern - generally picks up during the day
   const windBaseline = 5;
   const windVariation = 12;
-
-  // Rain probability - simulate a weather pattern
   const rainPattern = [
     0.05, 0.05, 0.1, 0.1, 0.2, 0.3, 0.4, 0.3, 0.2, 0.1, 0.05, 0, 0, 0, 0.05,
     0.1, 0.2, 0.3, 0.5, 0.4, 0.3, 0.2, 0.1, 0.05,
   ];
 
   for (let hour = 0; hour < 24; hour++) {
-    // Temperature follows a sine wave pattern peaking at midday
     const hourTemp =
       tempBaseline + tempVariation * Math.sin(((hour - 5) / 24) * Math.PI * 2);
 
-    // Wind has a different pattern, stronger in afternoon
     const hourWind =
       windBaseline +
       (hour > 10 && hour < 18
         ? windVariation * (0.5 + Math.random() * 0.5)
         : windVariation * Math.random() * 0.3);
 
-    // Rain chance follows the pattern defined above
     const hourRain = rainPattern[hour] * (0.8 + Math.random() * 0.4);
 
     mockData[hour] = {
       temperature: Math.round(hourTemp * 10) / 10,
       wind: Math.round(hourWind * 10) / 10,
       rainPercent: Math.min(1, Math.max(0, hourRain)),
-      puntingScore: 7, // Not used in the graph
+      puntingScore: 7,
     };
   }
   return mockData;
@@ -56,14 +46,10 @@ export function WeatherGraph() {
   >({});
   const [selectedTab, setSelectedTab] = useState<DataType>('temperature');
 
-  // Generate different mock data based on the selected tab
   useEffect(() => {
-    // Generate new mock data whenever the tab changes
-    // This makes the graph more dynamic and interesting when switching tabs
     setMockGraphData(generateMockData());
   }, [selectedTab]);
 
-  // Format data for LineGraph
   const getGraphData = () => {
     if (Object.keys(mockGraphData).length === 0) return [];
 
@@ -80,7 +66,7 @@ export function WeatherGraph() {
             break;
           case 'rain':
             value = data.rainPercent || 0;
-            value = value * 100; // Convert to percentage for display
+            value = value * 100;
             break;
         }
         return {
@@ -90,7 +76,6 @@ export function WeatherGraph() {
       });
   };
 
-  // Get the range for the graph
   const getGraphRange = () => {
     const data = getGraphData();
     if (data.length === 0) return undefined;
@@ -106,40 +91,22 @@ export function WeatherGraph() {
     };
   };
 
-  // Get color for graph based on data type
   const getGraphColor = (): string => {
     switch (selectedTab) {
       case 'temperature':
-        return '#FF6347'; // Tomato red
+        return '#FF6347';
       case 'wind':
-        return '#4682B4'; // Steel blue
+        return '#4682B4';
       case 'rain':
-        return '#0000FF'; // Blue
+        return '#0000FF';
       default:
         return '#000';
     }
   };
 
-  // Get unit label based on selected tab
-  const getUnitLabel = (): string => {
-    switch (selectedTab) {
-      case 'temperature':
-        return '°C';
-      case 'wind':
-        return 'mph';
-      case 'rain':
-        return '%';
-      default:
-        return '';
-    }
-  };
-
   return (
     <View style={styles.container}>
-      {/* Title */}
       <Text style={styles.title}>24-Hour Weather Forecast</Text>
-
-      {/* Tab selection */}
       <View style={styles.tabContainer}>
         <Pressable
           style={[
@@ -185,15 +152,10 @@ export function WeatherGraph() {
         </Pressable>
       </View>
 
-      {/* Graph */}
       <View style={styles.graphContainer}>
         {Object.keys(mockGraphData).length > 0 ? (
           <View style={styles.graph}>
-            {' '}
-            {/* Y-axis vertical bar */} {/* Grid Lines */}
             <View style={styles.gridContainer}>
-              {' '}
-              {/* Horizontal grid lines */}
               {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => (
                 <View
                   key={`h-${i}`}
@@ -204,7 +166,6 @@ export function WeatherGraph() {
                   ]}
                 />
               ))}
-              {/* Vertical grid lines */}
               {[0, 6, 12, 18, 24].map((_, i) => (
                 <View
                   key={`v-${i}`}
@@ -217,12 +178,10 @@ export function WeatherGraph() {
               ))}
             </View>
             <View style={styles.yAxis}>
-              <View style={styles.yAxisLine}></View>{' '}
-              {/* Render labels for all values including 0 */}
+              <View style={styles.yAxisLine} />
               {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
                 const max = getGraphRange()?.y.max || 100;
                 const value = max * ratio;
-
                 return (
                   <View
                     key={i}
@@ -232,7 +191,7 @@ export function WeatherGraph() {
                   </View>
                 );
               })}
-            </View>{' '}
+            </View>
             <LineGraph
               style={styles.lineGraph}
               points={getGraphData()}
@@ -244,10 +203,9 @@ export function WeatherGraph() {
               ]}
               lineThickness={3}
               range={getGraphRange()}
-            />{' '}
-            {/* X-axis with hour markers */}
+            />
             <View style={styles.xAxis}>
-              <View style={styles.xAxisLine}></View>{' '}
+              <View style={styles.xAxisLine} />
               {[0, 6, 12, 18, 24].map((hour, i) => (
                 <View
                   key={i}
@@ -283,7 +241,7 @@ const styles = StyleSheet.create({
     left: 45,
     right: 0,
     top: 0,
-    bottom: 25 /* Match the graph and y-axis bottom spacing */,
+    bottom: 25,
     zIndex: 1,
   },
   gridLine: {
@@ -336,14 +294,14 @@ const styles = StyleSheet.create({
   graph: {
     flex: 1,
     position: 'relative',
-    paddingBottom: 25 /* Space for x-axis */,
+    paddingBottom: 25,
   },
   lineGraph: {
     position: 'absolute',
     top: 0,
     left: 45,
     right: 0,
-    bottom: 25 /* Match the paddingBottom of graph */,
+    bottom: 25,
   },
   loadingText: {
     textAlign: 'center',
@@ -352,10 +310,10 @@ const styles = StyleSheet.create({
   },
   yAxis: {
     position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 25 /* Match the graph padding bottom */,
-    width: 45 /* Increased to match new left margin */,
+    left: 10,
+    height: '100%',
+    bottom: 32,
+    width: 45,
     zIndex: 10,
   },
   yAxisLine: {
@@ -363,14 +321,14 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     right: 0,
-    width: 0 /* Hide the y-axis line by setting width to 0 */,
+    width: 0,
     backgroundColor: '#ccc',
   },
   yAxisTick: {
     position: 'absolute',
     right: 0,
     width: 25,
-    height: 0 /* Hide the tick line by setting height to 0 */,
+    height: 0,
     backgroundColor: '#ccc',
   },
   yAxisLabel: {
@@ -381,9 +339,9 @@ const styles = StyleSheet.create({
   },
   xAxis: {
     position: 'absolute',
-    left: 45 /* Increased from 35 to 45 to prevent overlap with y-axis labels */,
+    left: 45,
     right: 0,
-    bottom: 0,
+    bottom: -10,
     height: 25,
     zIndex: 10,
   },
@@ -392,23 +350,23 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    height: 0 /* Hide the x-axis line by setting height to 0 */,
+    height: 0,
     backgroundColor: '#ccc',
   },
   xAxisTick: {
     position: 'absolute',
     top: 0,
-    height: 0 /* Hide the tick line by setting height to 0 */,
+    height: 0,
     width: 1,
     backgroundColor: '#ccc',
   },
   xAxisLabel: {
     position: 'absolute',
     top: 5,
-    fontSize: 12 /* Increased from 8 to 12 */,
+    fontSize: 12,
     color: '#555',
-    width: 30 /* Set fixed width to prevent layout issues */,
+    width: 30,
     textAlign: 'center',
-    left: -15 /* Center the label */,
+    left: -15,
   },
 });
