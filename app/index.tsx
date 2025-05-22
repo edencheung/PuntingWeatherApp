@@ -12,6 +12,8 @@ import {
 
 import { CentralDisplay } from '@/components/CentralDisplay';
 import { ForecastBar } from '@/components/ForecastBar';
+import { HourlyView } from '@/components/HourlyView';
+import { WeatherGraph } from '@/components/WeatherGraph';
 import {
   backgroundConditionImages,
   backgroundImages,
@@ -19,15 +21,14 @@ import {
   blobFaceImages,
 } from '@/constants';
 import { fetchWeather } from '@/lib/api';
-import { getHourlyWeatherData } from '@/lib/weatherDetails';
 import {
   BackgroundCondition,
   BackgroundType,
   BlobFace,
   BlobState,
 } from '@/types/background';
-import { HourlyWeatherData } from '@/types/punting';
 import { WeatherResponse } from '@/types/weather';
+import { useRouter } from 'expo-router';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -38,13 +39,9 @@ export default function Index() {
   >([]);
   let [blobState, setBlobState] = useState<BlobState>('punting');
   let [blobFace, setBlobFace] = useState<BlobFace>('happy');
-
   // 0 for now, then number of dates in the future.
   let [dateDelta, setDateDelta] = useState<number>(0);
   let [weatherData, setWeatherData] = useState<WeatherResponse>();
-  let [hourlyGraphData, setHourlyGraphData] =
-    useState<Record<number, HourlyWeatherData>>();
-
   useEffect(() => {
     if (weatherData === null) {
       fetchWeather()
@@ -55,12 +52,9 @@ export default function Index() {
           console.error('Error fetching weather data:', error);
         });
     }
-  }, []);
+  }, [weatherData]);
 
-  useEffect(() => {
-    if (!weatherData) return;
-    setHourlyGraphData(getHourlyWeatherData(weatherData, dateDelta));
-  }, [dateDelta, weatherData]);
+  const router = useRouter();
 
   return (
     <ScrollView
@@ -83,7 +77,6 @@ export default function Index() {
           }}
         />
       </View>
-
       {/* Background conditions */}
       {backgroundConditions.map((condition, index) => (
         <View style={styles.backgroundContainer} key={index}>
@@ -93,7 +86,6 @@ export default function Index() {
           />
         </View>
       ))}
-
       {/* Blobby */}
       <View style={styles.backgroundContainer}>
         <ImageBackground
@@ -107,10 +99,8 @@ export default function Index() {
           style={styles.backgroundImage}
         />
       </View>
-
       {/* Spacer for camera bump */}
       <View style={{ height: SCREEN_HEIGHT * 0.065 }}></View>
-
       {/* Container for settings button and spacer for middle info */}
       <View style={{ height: SCREEN_HEIGHT * 0.1 }}>
         <Button
@@ -118,15 +108,20 @@ export default function Index() {
           onPress={() => router.navigate(`/settings?background=${background}`)}
         />
       </View>
-
       {/* Container for middle info */}
       <CentralDisplay />
-
       {/* Spacer for bloby */}
-      <View style={{ height: SCREEN_HEIGHT * 0.43 }}></View>
-
+      <View style={{ height: SCREEN_HEIGHT * 0.47 }}></View>
       {/* Container for forecast bar */}
-      <ForecastBar />
+      <ForecastBar
+        dateDelta={dateDelta}
+        setDateDelta={setDateDelta}
+        weatherData={weatherData}
+      />{' '}
+      {/* Punting Scores */}
+      <HourlyView />
+      {/* Weather Graph */}
+      <WeatherGraph />
     </ScrollView>
   );
 }
@@ -146,14 +141,14 @@ const styles = StyleSheet.create({
   },
   backgroundColorFill: {
     width: '100%',
-    height: SCREEN_HEIGHT * 0.76,
+    height: SCREEN_HEIGHT * 0.8,
   },
   scrollView: {
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
     width: '100%',
-    height: SCREEN_HEIGHT * 1.76,
+    height: SCREEN_HEIGHT * 1.8,
     paddingTop: 0,
   },
 });

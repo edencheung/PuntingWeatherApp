@@ -1,42 +1,60 @@
 import { puntingScoreColors } from '@/constants';
+import { getBestPuntingScore } from '@/lib/weatherDetails';
 import { PuntingScore } from '@/types/punting';
-import { Dimensions, ScrollView, Text, View } from 'react-native';
+import { WeatherResponse } from '@/types/weather';
+import {
+  Dimensions,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-export function ForecastBar(setDateDelta: (dateDelta: number) => void) {
+export function ForecastBar(props: {
+  dateDelta: number;
+  setDateDelta: (dateDelta: number) => void;
+  weatherData?: WeatherResponse;
+}) {
+  // Get a list of the best punting score for each of the next 8 days
   return (
-    <View
-      style={{
-        height: SCREEN_WIDTH * 0.9 * (1 / 4.7),
-        width: SCREEN_WIDTH * 0.9,
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
-        paddingHorizontal: 5,
-        borderRadius: 10,
-      }}
-    >
+    <View style={styles.container}>
       <ScrollView
-        style={{ opacity: 1 }}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         bounces={false}
       >
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
+        <View style={styles.tilesContainer}>
           {/* Buttons */}
-          <ForecastTile date="Today" rating={3} />
-          <ForecastTile date="Today" rating={1} />
-          <ForecastTile date="Today" rating={2} />
-          <ForecastTile date="Today" rating={10} />
-          <ForecastTile date="Today" rating={6} />
-          <ForecastTile date="Today" rating={5} />
-          <ForecastTile date="Today" rating={3} />
-          <ForecastTile date="Today" rating={4} />
+          {Array.from({ length: 8 }).map((_, i) => {
+            // Get date for each tile
+            const dateObj = new Date();
+            dateObj.setDate(dateObj.getDate() + i);
+            let label;
+            if (i === 0) {
+              label = 'Today';
+            } else {
+              label = dateObj.toLocaleDateString(undefined, {
+                weekday: 'short',
+              });
+            }
+            return (
+              <ForecastTile
+                key={i}
+                date={label}
+                rating={
+                  props.weatherData
+                    ? getBestPuntingScore(i, props.weatherData)
+                    : 0
+                }
+                dateDelta={props.dateDelta}
+                setDateDelta={props.setDateDelta}
+                index={i}
+              />
+            );
+          })}
         </View>
       </ScrollView>
     </View>
@@ -46,23 +64,59 @@ export function ForecastBar(setDateDelta: (dateDelta: number) => void) {
 type ForecastTileProps = {
   date: string;
   rating: PuntingScore;
+  dateDelta: number;
+  setDateDelta: (dateDelta: number) => void;
+  index: number;
 };
 
-export function ForecastTile({ date, rating }: ForecastTileProps) {
+export function ForecastTile({
+  date,
+  rating,
+  dateDelta,
+  setDateDelta,
+  index,
+}: ForecastTileProps) {
+  const isSelected = dateDelta === index;
+
   return (
-    <View
-      style={{
-        width: SCREEN_WIDTH * 0.9 * (1 / 4.7),
-        height: '90%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
+    <Pressable
+      onPress={() => setDateDelta(index)}
+      style={[styles.tile, isSelected && styles.selectedTile]}
     >
-      <Text style={{ fontSize: 20 }}>{date}</Text>
-      <Text style={{ fontSize: 30, color: puntingScoreColors[rating] }}>
+      <Text style={styles.dateText}>{date}</Text>
+      <Text style={[styles.ratingText, { color: puntingScoreColors[rating] }]}>
         {rating}/10
       </Text>
-    </View>
+    </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    height: SCREEN_WIDTH * 0.9 * (1 / 4.5),
+    width: SCREEN_WIDTH * 0.9,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    paddingHorizontal: 5,
+    borderRadius: 10,
+  },
+  tilesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  tile: {
+    width: SCREEN_WIDTH * 0.9 * (1 / 4.7),
+    height: '90%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedTile: {
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    borderRadius: 8,
+  },
+  dateText: {
+    fontSize: 20,
+  },
+  ratingText: {
+    fontSize: 30,
+  },
+});

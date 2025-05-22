@@ -17,7 +17,6 @@ import { getUserPrefs, updateUserPrefs, UserPrefs } from '@/lib/preferences';
 import { BackgroundType } from '@/types/background';
 import { useLocalSearchParams } from 'expo-router';
 
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function Settings() {

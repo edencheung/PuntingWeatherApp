@@ -9,10 +9,8 @@ export type WeatherSummary = {
 };
 
 export type HourlyWeatherData = {
-  [hour: number]: {
-    puntingScore: PuntingScore;
-    temperature: number;
-    rainPercent: number;
-    wind: number;
-  };
+  puntingScore: PuntingScore;
+  temperature: number;
+  rainPercent: number;
+  wind: number;
 };

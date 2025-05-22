@@ -16,7 +16,7 @@ export function CentralDisplay() {
       <Text style={{ fontSize: 24, color: 'black' }}>
         11th May | Best time 1:48 pm
       </Text>
-      <Text style={{ fontSize: 24, color: 'black' }}>Hello World</Text>
+      <Text style={{ fontSize: 44, color: 'black' }}>Hello World</Text>
       <Text style={{ fontSize: 24, color: 'black' }}>Hello World</Text>
       <Text style={{ fontSize: 24, color: 'black' }}>Hello World</Text>
       <Text style={{ fontSize: 24, color: 'black' }}>Hello World</Text>

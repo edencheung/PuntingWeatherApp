@@ -1,111 +1,235 @@
-import { BackgroundType } from '@/types/background';
-import { PuntingScore, WeatherSummary } from '@/types/punting';
-import { ForecastDay, HourForecast } from '@/types/weather';
+import {
+  BackgroundCondition,
+  BackgroundType,
+  BlobFace,
+  BlobState,
+} from '@/types/background';
+import { WeatherSummary } from '@/types/punting';
+import { WeatherResponse } from '@/types/weather';
+import { UserPrefs } from './preferences';
+import {
+  getBestPuntingScoreData,
+  getCurrentPuntingScore,
+} from './weatherDetails';
 
 const noPuntingScore = 2;
+const windIndicator = 15;
 const coldIndicator = 8;
 
-// returns a string indicating what background to use based on weather data
-// priorities in descending order
-// night, no punting, rain, cloud, cold, sunny
-function getBackgroundType(
-  day: ForecastDay,
-  puntingScore: PuntingScore
-): BackgroundType {
+function isNight(weatherData: WeatherResponse) {
   // check for night
 
   const now = new Date();
   const hours = now.getHours();
 
-  const sunriseHour = parseInt(day.astro.sunrise.substring(0, 1));
-  const sunsetHour = parseInt(day.astro.sunset.substring(0, 1));
+  const sunriseHour = parseInt(
+    weatherData.forecast.forecastday[0].astro.sunrise.substring(0, 1)
+  );
+  const sunsetHour = parseInt(
+    weatherData.forecast.forecastday[0].astro.sunset.substring(0, 1)
+  );
 
-  if (hours < sunriseHour || hours > sunsetHour) {
-    return 'night';
-  }
+  return hours < sunriseHour || hours > sunsetHour;
+}
 
+function getCurrentBackgroundType(
+  weatherData: WeatherResponse,
+  userPrefs: UserPrefs
+): BackgroundType {
   // check for no punting
-  if (puntingScore <= noPuntingScore) {
+  if (getCurrentPuntingScore(weatherData, userPrefs) <= noPuntingScore) {
     return 'no_punt';
   }
 
-  // check for rain
-  if (day.day.daily_will_it_rain === 1) {
+  // check for current rain
+  if (weatherData.current.precip_mm > 0) {
     return 'rainy';
   }
 
   // check for cloud
-  if (day.day.condition.text === 'Cloudy') {
+  if (weatherData.current.condition.text === 'Cloudy') {
     return 'cloudy';
   }
 
-  if (day.day.avgtemp_c <= coldIndicator) {
+  if (weatherData.current.temp_c <= coldIndicator) {
     return 'cold';
   }
 
   return 'sunny';
 }
 
-function getBestHour(hours: HourForecast[]) {
-  let hourForecast = hours[0];
-  let topScore = extractPuntabilityScore(hours[0]);
+function getCurrentBackgroundConditions(
+  weatherData: WeatherResponse
+): BackgroundCondition[] {
+  let backgroundConditions: BackgroundCondition[] = [];
 
-  for (let i = 0; i < hours.length; i++) {
-    const score = extractPuntabilityScore(hours[i]);
-    if (score > topScore) {
-      topScore = score;
-      hourForecast = hours[i];
-    }
+  if (weatherData.current.condition.text === 'Cloudy') {
+    backgroundConditions.push('clouds');
+  } else if (weatherData.current.condition.text === 'Rainy') {
+    backgroundConditions.push('rain');
+    backgroundConditions.push('clouds');
   }
+
+  if (isNight(weatherData)) {
+    backgroundConditions.push('stars');
+  }
+
+  if (backgroundConditions.length === 0) {
+    backgroundConditions.push('sun');
+  }
+
+  if (weatherData.current.wind_mph > windIndicator) {
+    backgroundConditions.push('wind');
+  }
+
+  return backgroundConditions;
 }
 
-function getCurrentBackgroundType(): BackgroundType {
-  // TODO
+function getCurrentBlobState(
+  weatherData: WeatherResponse,
+  userPrefs: UserPrefs
+): BlobState {
+  if (isNight(weatherData)) {
+    return 'night';
+  }
+
+  if (getCurrentPuntingScore(weatherData, userPrefs) <= noPuntingScore) {
+    return 'no_punt';
+  }
+
+  return 'punting';
 }
 
-function getCurrentBackgroundConditions(): BackgroundCondition[] {
-  // TODO
+function getCurrentBlobFace(
+  weatherData: WeatherResponse,
+  userPrefs: UserPrefs
+): BlobFace {
+  if (getCurrentPuntingScore(weatherData, userPrefs) <= noPuntingScore) {
+    return 'very_sad';
+  }
+
+  if (isNight(weatherData)) {
+    return 'sleeping';
+  }
+
+  if (weatherData.current.precip_mm > 0) {
+    return 'sad';
+  }
+
+  if (weatherData.current.temp_c <= coldIndicator) {
+    return 'cold';
+  }
+
+  if (weatherData.current.condition.text === 'Cloudy') {
+    return 'neutral';
+  }
+
+  return 'happy';
 }
 
-function getCurrentBlobState(): BlobState {
-  // TODO
-}
-
-function getCurrentBlobFace(): BlobFace {
-  // TODO
-}
-
-export function getCurrentBackgroundData() {
+export function getCurrentBackgroundData(
+  weatherData: WeatherResponse,
+  userPrefs: UserPrefs
+) {
   return {
-    backgroundType: getCurrentBackgroundType(),
-    backgroundConditions: getCurrentBackgroundConditions(),
-    blobState: getCurrentBlobState(),
-    blobFace: getCurrentBlobFace(),
+    backgroundType: getCurrentBackgroundType(weatherData, userPrefs),
+    backgroundConditions: getCurrentBackgroundConditions(weatherData),
+    blobState: getCurrentBlobState(weatherData, userPrefs),
+    blobFace: getCurrentBlobFace(weatherData, userPrefs),
   };
 }
 
-function getBackgroundTypeForDate(date: number): BackgroundType {
+function getBackgroundTypeForDate(
+  weatherData: WeatherResponse,
+  date: number,
+  userPrefs: UserPrefs
+): BackgroundType {
+  let { hour, data } = getBestPuntingScoreData(date, weatherData, userPrefs);
+
+  // check for no punting
+  if (data.puntingScore <= noPuntingScore) {
+    return 'no_punt';
+  }
+
+  // check for current rain
+  if (weatherData.forecast.forecastday[date].hour[hour].will_it_rain === 1) {
+    return 'rainy';
+  }
+
+  // check for cloud
+  if (
+    weatherData.forecast.forecastday[date].hour[hour].condition.text ===
+    'Cloudy'
+  ) {
+    return 'cloudy';
+  }
+
+  if (
+    weatherData.forecast.forecastday[date].hour[hour].temp_c <= coldIndicator
+  ) {
+    return 'cold';
+  }
+
+  return 'sunny';
+}
+
+function getBackgroundConditionsForDate(
+  weatherData: WeatherResponse,
+  date: number,
+  userPrefs: UserPrefs
+): BackgroundCondition[] {
+  let { hour, data } = getBestPuntingScoreData(date, weatherData, userPrefs);
+
+  let backgroundConditions: BackgroundCondition[] = [];
+
+  if (
+    weatherData.forecast.forecastday[date].hour[hour].condition.text ===
+    'Cloudy'
+  ) {
+    backgroundConditions.push('clouds');
+  } else if (
+    weatherData.forecast.forecastday[date].hour[hour].condition.text === 'Rainy'
+  ) {
+    backgroundConditions.push('rain');
+    backgroundConditions.push('clouds');
+  }
+
+  if (backgroundConditions.length === 0) {
+    backgroundConditions.push('sun');
+  }
+
+  if (
+    weatherData.forecast.forecastday[date].hour[hour].wind_mph > windIndicator
+  ) {
+    backgroundConditions.push('wind');
+  }
+
+  return backgroundConditions;
+}
+
+function getBlobStateForDate(
+  weatherData: WeatherResponse,
+  date: number
+): BlobState {
   // TODO
 }
 
-function getBackgroundConditionsForDate(date: number): BackgroundCondition[] {
+function getBlobFaceForDate(
+  weatherData: WeatherResponse,
+  date: number
+): BlobFace {
   // TODO
 }
 
-function getBlobStateForDate(date: number): BlobState {
-  // TODO
-}
-
-function getBlobFaceForDate(date: number): BlobFace {
-  // TODO
-}
-
-export function getBackgroundDataForDate(date: number) {
+export function getBackgroundDataForDate(
+  weatherData: WeatherResponse,
+  date: number
+) {
   return {
-    backgroundType: getBackgroundTypeForDate(date),
-    backgroundConditions: getBackgroundConditionsForDate(date),
-    blobState: getBlobStateForDate(date),
-    blobFace: getBlobFaceForDate(date),
+    backgroundType: getBackgroundTypeForDate(weatherData, date),
+    backgroundConditions: getBackgroundConditionsForDate(weatherData, date),
+    blobState: getBlobStateForDate(weatherData, date),
+    blobFace: getBlobFaceForDate(weatherData, date),
   };
 }
 

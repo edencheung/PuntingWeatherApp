@@ -52,8 +52,8 @@ export const backgroundImages = {
   night: {
     imageImport: nightBackground,
     backgroundColor: '#25215c',
-  }
-}
+  },
+};
 
 export const backgroundConditionImages = {
   stars: starsImage,
@@ -61,13 +61,13 @@ export const backgroundConditionImages = {
   sun: sunImage,
   wind: windImage,
   clouds: cloudsImage,
-}
+};
 
 export const blobBodyImages = {
   punting: puntingBlob,
   no_punt: noPuntBlob,
   night: sleepingBlob,
-}
+};
 
 export const blobFaceImages = {
   cold: coldFace,
@@ -76,7 +76,7 @@ export const blobFaceImages = {
   sad: sadFace,
   very_sad: verySadFace,
   sleeping: sleepingFace,
-}
+};
 
 export const puntingScoreColors: Record<PuntingScore, string> = {
   0: '#ff0000',
@@ -89,5 +89,19 @@ export const puntingScoreColors: Record<PuntingScore, string> = {
   7: '#99ff00',
   8: '#00ff00',
   9: '#00ff00',
-  10: '#00ff00'
-}
+  10: '#00ff00',
+};
+
+export const puntingScoreEmojis: Record<PuntingScore, any> = {
+  0: require('./assets/puntingEmoji/NOO.png'),
+  1: require('./assets/puntingEmoji/NOO.png'),
+  2: require('./assets/puntingEmoji/NOO.png'),
+  3: require('./assets/puntingEmoji/uhh.png'),
+  4: require('./assets/puntingEmoji/uhh.png'),
+  5: require('./assets/puntingEmoji/okay.png'),
+  6: require('./assets/puntingEmoji/okay.png'),
+  7: require('./assets/puntingEmoji/good.png'),
+  8: require('./assets/puntingEmoji/good.png'),
+  9: require('./assets/puntingEmoji/good.png'),
+  10: require('./assets/puntingEmoji/good.png'),
+};

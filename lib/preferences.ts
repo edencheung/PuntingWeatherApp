@@ -17,5 +17,14 @@ export async function updateUserPrefs(prefs: UserPrefs) {
 
 export async function getUserPrefs(): Promise<UserPrefs | null> {
   const jsonValue = await AsyncStorage.getItem('usersPrefs');
-  return jsonValue != null ? JSON.parse(jsonValue) : null;
+  return jsonValue != null
+    ? JSON.parse(jsonValue)
+    : {
+        presenceOfSun: 3,
+        calmWinds: 3,
+        comfortableTemperatures: 3,
+        absenceOfRain: 3,
+        notifications: 'never',
+        idealTemperature: 23,
+      };
 }
