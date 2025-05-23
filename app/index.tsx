@@ -119,8 +119,10 @@ export default function Index() {
         weatherData={weatherData}
       />{' '}
       {/* Punting Scores */}
+      {/* Pass in hourlyWeatherData: Record<number, HourlyWeatherData> here, might want to crop the data to the current time if the user is viewing the data for today */}
       <HourlyView />
       {/* Weather Graph */}
+      {/* Pass in hourlyWeatherData: Record<number, HourlyWeatherData> here */}
       <WeatherGraph />
     </ScrollView>
   );

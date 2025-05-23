@@ -1,13 +1,13 @@
-import { HourlyWeatherData } from '@/types/punting';
-import { useEffect, useState } from 'react';
+import { HourlyWeatherData, PuntingScore } from '@/types/punting';
+import { useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { LineGraph } from 'react-native-graph';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-type DataType = 'temperature' | 'wind' | 'rain';
+type WeatherDataType = 'temperature' | 'wind' | 'rain';
 
-const generateMockData = (): Record<number, HourlyWeatherData> => {
+export const generateMockData = (): Record<number, HourlyWeatherData> => {
   const mockData: Record<number, HourlyWeatherData> = {};
   const tempBaseline = 15;
   const tempVariation = 10;
@@ -34,26 +34,24 @@ const generateMockData = (): Record<number, HourlyWeatherData> => {
       temperature: Math.round(hourTemp * 10) / 10,
       wind: Math.round(hourWind * 10) / 10,
       rainPercent: Math.min(1, Math.max(0, hourRain)),
-      puntingScore: 7,
+      puntingScore: Math.round(Math.random() * 10) as PuntingScore,
     };
   }
   return mockData;
 };
 
-export function WeatherGraph() {
-  const [mockGraphData, setMockGraphData] = useState<
-    Record<number, HourlyWeatherData>
-  >({});
-  const [selectedTab, setSelectedTab] = useState<DataType>('temperature');
-
-  useEffect(() => {
-    setMockGraphData(generateMockData());
-  }, [selectedTab]);
+export function WeatherGraph({
+  hourlyWeatherData = generateMockData(),
+}: {
+  hourlyWeatherData?: Record<number, HourlyWeatherData>;
+}) {
+  const [selectedTab, setSelectedTab] =
+    useState<WeatherDataType>('temperature');
 
   const getGraphData = () => {
-    if (Object.keys(mockGraphData).length === 0) return [];
+    if (Object.keys(hourlyWeatherData).length === 0) return [];
 
-    return Object.entries(mockGraphData)
+    return Object.entries(hourlyWeatherData)
       .sort(([hourA], [hourB]) => parseInt(hourA) - parseInt(hourB))
       .map(([hour, data]) => {
         let value = 0;
@@ -153,7 +151,7 @@ export function WeatherGraph() {
       </View>
 
       <View style={styles.graphContainer}>
-        {Object.keys(mockGraphData).length > 0 ? (
+        {Object.keys(hourlyWeatherData).length > 0 ? (
           <View style={styles.graph}>
             <View style={styles.gridContainer}>
               {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => (
@@ -212,7 +210,7 @@ export function WeatherGraph() {
                   style={[styles.xAxisTick, { left: `${i * 25}%` }]}
                 >
                   <Text style={styles.xAxisLabel}>
-                    {hour.toString().padStart(2, '0')}
+                    {hour.toString().padStart(2, '0') + ':00'}
                   </Text>
                 </View>
               ))}
@@ -365,7 +363,7 @@ const styles = StyleSheet.create({
     top: 5,
     fontSize: 12,
     color: '#555',
-    width: 30,
+    width: 35,
     textAlign: 'center',
     left: -15,
   },

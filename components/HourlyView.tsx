@@ -1,5 +1,5 @@
 import { puntingScoreEmojis } from '@/constants';
-import { PuntingScore } from '@/types/punting';
+import { HourlyWeatherData } from '@/types/punting';
 import {
   Dimensions,
   Image,
@@ -8,10 +8,15 @@ import {
   Text,
   View,
 } from 'react-native';
+import { generateMockData } from './WeatherGraph';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-export function HourlyView() {
+export function HourlyView({
+  hourlyWeatherData = generateMockData(),
+}: {
+  hourlyWeatherData?: Record<number, HourlyWeatherData>;
+}) {
   return (
     <View style={styles.container}>
       <ScrollView
@@ -19,69 +24,43 @@ export function HourlyView() {
         bounces={false}
         showsHorizontalScrollIndicator={false}
       >
-        <HourlyTile
-          puntingScore={7 as PuntingScore}
-          hour={3}
-          wind={0}
-          rainPercent={0}
-          temperature={0}
-        />
-        <HourlyTile
-          puntingScore={7 as PuntingScore}
-          hour={3}
-          wind={0}
-          rainPercent={0}
-          temperature={0}
-        />
-        <HourlyTile
-          puntingScore={7 as PuntingScore}
-          hour={3}
-          wind={0}
-          rainPercent={0}
-          temperature={0}
-        />
-        <HourlyTile
-          puntingScore={7 as PuntingScore}
-          hour={3}
-          wind={0}
-          rainPercent={0}
-          temperature={0}
-        />
-        <HourlyTile
-          puntingScore={7 as PuntingScore}
-          hour={3}
-          wind={0}
-          rainPercent={0}
-          temperature={0}
-        />
-        <HourlyTile
-          puntingScore={7 as PuntingScore}
-          hour={3}
-          wind={0}
-          rainPercent={0}
-          temperature={0}
-        />
+        {Object.entries(hourlyWeatherData).map(([key, value]) => {
+          return (
+            <HourlyTile
+              key={key}
+              hour={parseInt(key)}
+              puntingScore={value.puntingScore}
+              rainPercent={value.rainPercent}
+              temperature={value.temperature}
+              wind={value.wind}
+            />
+          );
+        })}
       </ScrollView>
     </View>
   );
 }
 
-function HourlyTile(props: {
-  hour: number;
-  puntingScore: PuntingScore;
-  wind: number;
-  rainPercent: number;
-  temperature: number;
-}) {
+function HourlyTile(
+  props: HourlyWeatherData & {
+    hour: number;
+  }
+) {
+  // Format hour with leading zero if it's a single digit
+  const formattedHour =
+    (props.hour < 10 ? `0${props.hour}` : `${props.hour}`) + ':00';
+
   return (
     <View style={styles.tile}>
-      <Text style={styles.hourText}>{props.hour}</Text>
+      <Text style={styles.hourText}>{formattedHour}</Text>
       <Image
         style={{ height: '25%', resizeMode: 'contain' }}
         source={puntingScoreEmojis[props.puntingScore]}
       />
       <Text style={styles.tileText}>{props.puntingScore}/10</Text>
-      <Text style={styles.tileText}>{props.rainPercent}%💧</Text>
+      <Text style={styles.tileText}>
+        {Math.round(props.rainPercent * 100)}%💧
+      </Text>
       <Text style={styles.tileText}>{props.temperature}°C</Text>
       <Text style={styles.tileText}>{props.wind}mph</Text>
     </View>
