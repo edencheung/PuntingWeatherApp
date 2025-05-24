@@ -1,8 +1,24 @@
+import { puntingScoreColors } from '@/constants';
+import { PuntingScore } from '@/types/punting';
 import { Dimensions, Text, View } from 'react-native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-export function CentralDisplay() {
+type CentralDisplayProps = {
+  date?: string;
+  bestTime?: string;
+  puntingScore?: PuntingScore;
+  dailySummary?: string;
+  weatherConditionsSummary?: string;
+};
+
+export function CentralDisplay({
+  date = '11th May',
+  bestTime = '1:48 pm',
+  puntingScore = 10,
+  dailySummary = 'A great day for punting!',
+  weatherConditionsSummary = '22-25°C | Calm winds | Sunny',
+}: CentralDisplayProps) {
   return (
     <View
       style={{
@@ -14,12 +30,15 @@ export function CentralDisplay() {
       }}
     >
       <Text style={{ fontSize: 24, color: 'black' }}>
-        11th May | Best time 1:48 pm
+        {date} | Best time {bestTime}
       </Text>
-      <Text style={{ fontSize: 44, color: 'black' }}>Hello World</Text>
-      <Text style={{ fontSize: 24, color: 'black' }}>Hello World</Text>
-      <Text style={{ fontSize: 24, color: 'black' }}>Hello World</Text>
-      <Text style={{ fontSize: 24, color: 'black' }}>Hello World</Text>
+      <Text style={{ fontSize: 60, color: puntingScoreColors[puntingScore] }}>
+        {puntingScore}/10
+      </Text>
+      <Text style={{ fontSize: 24, color: 'black' }}>{dailySummary}</Text>
+      <Text style={{ fontSize: 24, color: 'black' }}>
+        {weatherConditionsSummary}
+      </Text>
     </View>
   );
 }

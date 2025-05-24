@@ -1,7 +1,5 @@
 import { puntingScoreColors } from '@/constants';
-import { getBestPuntingScore } from '@/lib/weatherDetails';
-import { PuntingScore } from '@/types/punting';
-import { WeatherResponse } from '@/types/weather';
+import { HourlyWeatherData, PuntingScore } from '@/types/punting';
 import {
   Dimensions,
   Pressable,
@@ -10,14 +8,21 @@ import {
   Text,
   View,
 } from 'react-native';
+import { generateMockData } from './WeatherGraph';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-export function ForecastBar(props: {
+type ForecastBarProps = {
   dateDelta: number;
   setDateDelta: (dateDelta: number) => void;
-  weatherData?: WeatherResponse;
-}) {
+  dailyWeatherData?: Record<number, Record<number, HourlyWeatherData>>;
+};
+
+export function ForecastBar({
+  dateDelta,
+  setDateDelta,
+  dailyWeatherData,
+}: ForecastBarProps) {
   // Get a list of the best punting score for each of the next 8 days
   return (
     <View style={styles.container}>
@@ -45,12 +50,16 @@ export function ForecastBar(props: {
                 key={i}
                 date={label}
                 rating={
-                  props.weatherData
-                    ? getBestPuntingScore(i, props.weatherData)
-                    : 0
+                  Math.max(
+                    ...Object.values(
+                      dailyWeatherData
+                        ? dailyWeatherData[dateDelta]
+                        : generateMockData()
+                    ).map((hourly) => hourly?.puntingScore ?? 0)
+                  ) as PuntingScore
                 }
-                dateDelta={props.dateDelta}
-                setDateDelta={props.setDateDelta}
+                dateDelta={dateDelta}
+                setDateDelta={setDateDelta}
                 index={i}
               />
             );

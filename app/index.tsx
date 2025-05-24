@@ -113,11 +113,7 @@ export default function Index() {
       {/* Spacer for bloby */}
       <View style={{ height: SCREEN_HEIGHT * 0.47 }}></View>
       {/* Container for forecast bar */}
-      <ForecastBar
-        dateDelta={dateDelta}
-        setDateDelta={setDateDelta}
-        weatherData={weatherData}
-      />{' '}
+      <ForecastBar dateDelta={dateDelta} setDateDelta={setDateDelta} />{' '}
       {/* Punting Scores */}
       {/* Pass in hourlyWeatherData: Record<number, HourlyWeatherData> here, might want to crop the data to the current time if the user is viewing the data for today */}
       <HourlyView />
