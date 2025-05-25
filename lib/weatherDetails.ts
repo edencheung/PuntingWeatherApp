@@ -64,14 +64,18 @@ export function getHourlyWeatherData(
   hour: number,
   prefs: UserPrefs
 ): HourlyWeatherData {
-  const targetDay = weatherData.forecast.forecastday.find(
-    (day) => Math.floor(day.date_epoch) === Math.floor(date)
-  );
+  const targetDay = weatherData.forecast.forecastday[date];
 
-  const targetEntry = targetDay?.hour.find((h) => {
-    const entryHour = new Date(h.time).getHours();
-    return entryHour === hour;
-  });
+  if (!targetDay || !targetDay.hour || hour < 0 || hour >= 24) {
+    return {
+      puntingScore: 0,
+      temperature: 0,
+      rainPercent: 0,
+      wind: 0,
+    };
+  }
+
+  const targetEntry = targetDay.hour[hour];
 
   if (!targetEntry) {
     return {
@@ -106,12 +110,41 @@ export function getHourlyWeatherData(
   };
 }
 
+export function getAllHourlyWeatherData(
+  weather: WeatherResponse | undefined,
+  date: number,
+  prefs: UserPrefs | null): Record<number, HourlyWeatherData> {
+  const hourlyData: Record<number, HourlyWeatherData> = {};
+
+  if (!weather || !weather.forecast || !weather.forecast.forecastday) {
+    return hourlyData; // Return empty if no forecast data is available
+  }
+
+  if (!prefs) {
+    return hourlyData; // Return empty if no user preferences are available
+  }
+
+  for (let hour = 0; hour < 24; hour++) {
+    hourlyData[hour] = getHourlyWeatherData(weather, date, hour, prefs);
+  }
+
+  return hourlyData;
+}
+
 // returns the best punting score for a given day (the best hour)
 export function getBestPuntingScoreData(
   dateEpoch: number,
-  weatherData: WeatherResponse,
-  prefs: UserPrefs
+  weatherData: WeatherResponse | undefined,
+  prefs: UserPrefs | null
 ) {
+  if (!weatherData || !weatherData.forecast || !weatherData.forecast.forecastday) {
+    return { hour: 0, data: { puntingScore: 0, temperature: 0, rainPercent: 0, wind: 0 } };
+  }
+
+  if (!prefs) {
+    return { hour: 0, data: { puntingScore: 0, temperature: 0, rainPercent: 0, wind: 0 } };
+  }
+
   let bestWeatherData: HourlyWeatherData = {
     puntingScore: 0,
     temperature: 0,
@@ -130,4 +163,25 @@ export function getBestPuntingScoreData(
   }
 
   return { hour: bestHour, data: bestWeatherData };
+}
+
+export function getDailyWeatherData(
+  weatherData: WeatherResponse | undefined,
+  prefs: UserPrefs | null
+): Record<number, Record<number, HourlyWeatherData>> | undefined {
+  const dailyData: Record<number, Record<number, HourlyWeatherData>> = {};
+
+  if (!weatherData || !weatherData.forecast || !weatherData.forecast.forecastday) {
+    return undefined; // Return empty if no forecast data is available
+  }
+
+  if (!prefs) {
+    return undefined; // Return empty if no user preferences are available
+  }
+
+  for (let date = 0; date < weatherData.forecast.forecastday.length; date++) {
+    dailyData[date] = getAllHourlyWeatherData(weatherData, date, prefs);
+  }
+
+  return dailyData;
 }

@@ -22,11 +22,19 @@ import {
 } from '@/constants';
 import { fetchWeather } from '@/lib/api';
 import {
+  getBackgroundDataForDate,
+  getCurrentBackgroundData
+} from '@/lib/conditions';
+import { getUserPrefs, UserPrefs } from '@/lib/preferences';
+import { getAllHourlyWeatherData, getBestPuntingScoreData, getDailyWeatherData } from '@/lib/weatherDetails';
+import {
   BackgroundCondition,
+  BackgroundData,
   BackgroundType,
   BlobFace,
   BlobState,
 } from '@/types/background';
+import { PuntingScore } from '@/types/punting';
 import { WeatherResponse } from '@/types/weather';
 import { useRouter } from 'expo-router';
 
@@ -43,7 +51,7 @@ export default function Index() {
   let [dateDelta, setDateDelta] = useState<number>(0);
   let [weatherData, setWeatherData] = useState<WeatherResponse>();
   useEffect(() => {
-    if (weatherData === null) {
+    if (weatherData === undefined) {
       fetchWeather()
         .then((data) => {
           setWeatherData(data);
@@ -54,7 +62,36 @@ export default function Index() {
     }
   }, [weatherData]);
 
+  const [userPrefs, setUserPrefs] = useState<UserPrefs | null>(null);
+  useEffect(() => {
+    getUserPrefs().then(setUserPrefs);
+  }, []);
+
   const router = useRouter();
+
+  const { hour, data } = getBestPuntingScoreData(dateDelta, weatherData, userPrefs);
+
+  const dateObj = new Date();
+  dateObj.setDate(dateObj.getDate() + dateDelta);
+
+  const [backgroundData, setBackgroundData] = useState<BackgroundData>();
+
+  useEffect(() => {
+    if (!weatherData || userPrefs == null || dateDelta == null) return;
+
+    let data: BackgroundData;
+    if (dateDelta === 0) {
+      data = getCurrentBackgroundData(weatherData, userPrefs);
+    } else {
+      data = getBackgroundDataForDate(weatherData, dateDelta, userPrefs);
+    }
+
+    setBackgroundData(data);
+    setBackground(data.backgroundType as BackgroundType);
+    setBackgroundConditions(data.backgroundConditions);
+    setBlobState(data.blobState as BlobState);
+    setBlobFace(data.blobFace as BlobFace);
+  }, [weatherData, userPrefs, dateDelta]);
 
   return (
     <ScrollView
@@ -109,17 +146,17 @@ export default function Index() {
         />
       </View>
       {/* Container for middle info */}
-      <CentralDisplay />
+      <CentralDisplay date={dateObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', })} bestTime={`${hour}:00`} puntingScore={data.puntingScore as PuntingScore} dailySummary='TODO' weatherConditionsSummary='TODO' />
       {/* Spacer for bloby */}
       <View style={{ height: SCREEN_HEIGHT * 0.47 }}></View>
       {/* Container for forecast bar */}
-      <ForecastBar dateDelta={dateDelta} setDateDelta={setDateDelta} />{' '}
+      <ForecastBar dateDelta={dateDelta} setDateDelta={setDateDelta} dailyWeatherData={getDailyWeatherData(weatherData, userPrefs)} />
       {/* Punting Scores */}
       {/* Pass in hourlyWeatherData: Record<number, HourlyWeatherData> here, might want to crop the data to the current time if the user is viewing the data for today */}
-      <HourlyView />
+      <HourlyView hourlyWeatherData={getAllHourlyWeatherData(weatherData, dateDelta, userPrefs)} />
       {/* Weather Graph */}
       {/* Pass in hourlyWeatherData: Record<number, HourlyWeatherData> here */}
-      <WeatherGraph />
+      <WeatherGraph hourlyWeatherData={getAllHourlyWeatherData(weatherData, dateDelta, userPrefs)} />
     </ScrollView>
   );
 }

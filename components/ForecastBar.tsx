@@ -24,6 +24,7 @@ export function ForecastBar({
   dailyWeatherData,
 }: ForecastBarProps) {
   // Get a list of the best punting score for each of the next 8 days
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -52,9 +53,7 @@ export function ForecastBar({
                 rating={
                   Math.max(
                     ...Object.values(
-                      dailyWeatherData
-                        ? dailyWeatherData[dateDelta]
-                        : generateMockData()
+                      dailyWeatherData?.[i] ?? generateMockData()
                     ).map((hourly) => hourly?.puntingScore ?? 0)
                   ) as PuntingScore
                 }

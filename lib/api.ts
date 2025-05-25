@@ -5,7 +5,7 @@ export async function fetchWeather(): Promise<WeatherResponse> {
   const params = new URLSearchParams({
     key: process.env.EXPO_PUBLIC_API_KEY || '',
     q: 'CB2',
-    days: '7',
+    days: '8',
   });
   const res = await fetch(
     `http://api.weatherapi.com/v1/forecast.json?${params}`

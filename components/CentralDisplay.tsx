@@ -4,7 +4,7 @@ import { Dimensions, Text, View } from 'react-native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-type CentralDisplayProps = {
+export type CentralDisplayProps = {
   date?: string;
   bestTime?: string;
   puntingScore?: PuntingScore;

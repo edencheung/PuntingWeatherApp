@@ -1,5 +1,6 @@
 import {
   BackgroundCondition,
+  BackgroundData,
   BackgroundType,
   BlobFace,
   BlobState,
@@ -12,24 +13,28 @@ import {
   getCurrentPuntingScore,
 } from './weatherDetails';
 
-const noPuntingScore = 2;
+const noPuntingScore = 3;
 const windIndicator = 15;
 const coldIndicator = 8;
 
 function isNight(weatherData: WeatherResponse) {
   // check for night
 
+  if (!weatherData || !weatherData.forecast || !weatherData.forecast.forecastday) {
+    return false; // Default to day if no data is available
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+
   const now = new Date();
-  const hours = now.getHours();
 
-  const sunriseHour = parseInt(
-    weatherData.forecast.forecastday[0].astro.sunrise.substring(0, 1)
-  );
-  const sunsetHour = parseInt(
-    weatherData.forecast.forecastday[0].astro.sunset.substring(0, 1)
-  );
+  const sunriseDateTimeString = `${today} ${weatherData.forecast.forecastday[0].astro.sunrise}`;
+  const sunriseDate = new Date(sunriseDateTimeString);
 
-  return hours < sunriseHour || hours > sunsetHour;
+  const sunsetDateTimeString = `${today} ${weatherData.forecast.forecastday[0].astro.sunset}`;
+  const sunsetDate = new Date(sunsetDateTimeString);
+
+  return now < sunriseDate || now > sunsetDate;
 }
 
 function getCurrentBackgroundType(
@@ -128,9 +133,18 @@ function getCurrentBlobFace(
 }
 
 export function getCurrentBackgroundData(
-  weatherData: WeatherResponse,
-  userPrefs: UserPrefs
-) {
+  weatherData: WeatherResponse | undefined,
+  userPrefs: UserPrefs | null
+): BackgroundData {
+  if (!weatherData || !userPrefs) {
+    return {
+      backgroundType: 'sunny',
+      backgroundConditions: [],
+      blobState: 'punting',
+      blobFace: 'happy',
+    };
+  }
+
   return {
     backgroundType: getCurrentBackgroundType(weatherData, userPrefs),
     backgroundConditions: getCurrentBackgroundConditions(weatherData),
@@ -209,30 +223,76 @@ function getBackgroundConditionsForDate(
 
 function getBlobStateForDate(
   weatherData: WeatherResponse,
-  date: number
+  date: number,
+  userPrefs: UserPrefs
 ): BlobState {
-  // TODO
+  let { hour, data } = getBestPuntingScoreData(date, weatherData, userPrefs);
+
+  if (data.puntingScore <= noPuntingScore) {
+    return 'no_punt';
+  }
+
+  return 'punting';
 }
 
 function getBlobFaceForDate(
   weatherData: WeatherResponse,
-  date: number
+  date: number,
+  userPrefs: UserPrefs
 ): BlobFace {
-  // TODO
+  let { hour, data } = getBestPuntingScoreData(date, weatherData, userPrefs);
+
+  if (data.puntingScore <= noPuntingScore) {
+    return 'very_sad';
+  }
+
+  if (weatherData.forecast.forecastday[date].hour[hour].precip_mm > 0) {
+    return 'sad';
+  }
+
+  if (weatherData.forecast.forecastday[date].hour[hour].temp_c <= coldIndicator) {
+    return 'cold';
+  }
+
+  if (weatherData.forecast.forecastday[date].hour[hour].condition.text === 'Cloudy') {
+    return 'neutral';
+  }
+
+  return 'happy';
 }
 
 export function getBackgroundDataForDate(
-  weatherData: WeatherResponse,
-  date: number
-) {
+  weatherData: WeatherResponse | undefined,
+  date: number,
+  userPrefs: UserPrefs | null
+): BackgroundData {
+  if (!weatherData || !userPrefs) {
+    return {
+      backgroundType: 'sunny',
+      backgroundConditions: [],
+      blobState: 'punting',
+      blobFace: 'happy',
+    };
+  }
+
   return {
-    backgroundType: getBackgroundTypeForDate(weatherData, date),
-    backgroundConditions: getBackgroundConditionsForDate(weatherData, date),
-    blobState: getBlobStateForDate(weatherData, date),
-    blobFace: getBlobFaceForDate(weatherData, date),
+    backgroundType: getBackgroundTypeForDate(weatherData, date, userPrefs),
+    backgroundConditions: getBackgroundConditionsForDate(weatherData, date, userPrefs),
+    blobState: getBlobStateForDate(weatherData, date, userPrefs),
+    blobFace: getBlobFaceForDate(weatherData, date, userPrefs),
   };
 }
 
-export function getOverallSummary(date: number): WeatherSummary {
-  // TODO
+export function getOverallSummary(
+  date: number,
+  weatherData: WeatherResponse,
+  userPrefs: UserPrefs
+): WeatherSummary {
+  return {
+    bestTime: "best hour: " + getBestPuntingScoreData(date, weatherData, userPrefs).hour,
+    description: "TODO desc",
+    temperatureRange: "TODO temp",
+    windDescription: "TODO wind",
+    weatherDescription: "TODO weather",
+  }
 }
