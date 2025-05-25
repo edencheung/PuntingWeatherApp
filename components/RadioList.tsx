@@ -30,7 +30,15 @@ export default function RadioList<T extends number | string>({
             status={selectedId === item.id ? 'checked' : 'unchecked'}
             onPress={() => onSelect(item.id)}
           />
-          <Text>{item.text}</Text>
+          <Text
+            style={{
+              fontSize: horizontal ? 15 : 18,
+              color: horizontal ? '#444444' : 'black',
+              marginTop: -4,
+            }}
+          >
+            {item.text}
+          </Text>
         </View>
       ))}
     </View>
