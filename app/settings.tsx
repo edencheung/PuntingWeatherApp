@@ -4,18 +4,19 @@ import { useEffect, useState } from 'react';
 import {
   Dimensions,
   ImageBackground,
+  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator, Button } from 'react-native-paper';
 
 import RadioList from '@/components/RadioList';
 import { backgroundImages } from '@/constants';
 import { getUserPrefs, updateUserPrefs, UserPrefs } from '@/lib/preferences';
 
 import { BackgroundType } from '@/types/background';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -60,12 +61,21 @@ export default function Settings() {
     );
   }, [preferences]);
 
+  const router = useRouter();
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.container}>
       <View style={styles.backgroundContainer}>
         <ImageBackground
           source={backgroundImages[background || 'sunny'].imageImport}
           style={styles.backgroundImage}
+        />
+        <View
+          style={{
+            ...styles.backgroundColorFill,
+            backgroundColor:
+              backgroundImages[background || 'sunny'].backgroundColor,
+          }}
         />
       </View>
 
@@ -73,89 +83,32 @@ export default function Settings() {
       <View style={{ height: SCREEN_HEIGHT * 0.065 }}></View>
 
       {/* Container for settings button and spacer for middle info */}
-      <View style={{ height: SCREEN_HEIGHT * 0.1 }}></View>
-
-      {/* Container for middle info */}
-      {/* {prefsLoaded ? (
-        <View
+      <View style={{ left: 0, marginBottom: 20, width: '100%' }}>
+        <Button
+          mode="contained"
+          icon="arrow-left"
+          buttonColor={backgroundImages[background || 'sunny'].backgroundColor}
+          onPress={() => router.navigate('/')}
+          style={{ marginLeft: 15, marginRight: 'auto' }}
+        >
+          Home
+        </Button>
+        <Text
           style={{
-            height: SCREEN_HEIGHT * 0.25,
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-            paddingTop: 0,
-            backgroundColor: 'transparent',
+            fontSize: 48,
+            marginBottom: -10,
+            marginTop: 10,
+            marginLeft: 'auto',
+            marginRight: 'auto',
           }}
         >
-          <View style={styles.blurContainer}>
-            <RadioList
-              data={[
-                { text: 'Weekly', id: 'weekly' },
-                { text: 'Only when puntability at least 8', id: 'good' },
-                { text: 'Never', id: 'never' },
-              ]}
-              onSelect={(id) =>
-                onPreferenceChange({ ...preferences, notifications: id })
-              }
-              selectedId={preferences.notifications}
-              horizontal={false}
-            />
-          </View>
-          <View style={styles.blurContainer}>
-            <Text>Rate how important these factors are to you:</Text>
-            {preferenceOptions.map((preferenceOption) => (
-              <View key={preferenceOption}>
-                <Text>
-                  {(
-                    preferenceOption.charAt(0).toUpperCase() +
-                    preferenceOption.slice(1)
-                  ).replace(/([A-Z])/g, ' $1')}
-                </Text>
-                <RadioList
-                  key={preferenceOption}
-                  data={[
-                    { text: '1', id: 1 },
-                    { text: '2', id: 2 },
-                    { text: '3', id: 3 },
-                    { text: '4', id: 4 },
-                    { text: '5', id: 5 },
-                  ]}
-                  onSelect={(id) =>
-                    onPreferenceChange({
-                      ...preferences,
-                      [preferenceOption]: id,
-                    })
-                  }
-                  selectedId={preferences[preferenceOption]}
-                  horizontal={true}
-                />
-              </View>
-            ))}
-            <Text>Set your ideal temperature:</Text>
-            <RadioList
-              data={[
-                { text: '20', id: 20 },
-                { text: '21', id: 21 },
-                { text: '22', id: 22 },
-                { text: '23', id: 23 },
-                { text: '24', id: 24 },
-                { text: '25', id: 25 },
-                { text: '26', id: 26 },
-              ]}
-              onSelect={(id) =>
-                onPreferenceChange({ ...preferences, idealTemperature: id })
-              }
-              selectedId={preferences.idealTemperature}
-              horizontal={true}
-            />
-          </View>
-        </View>
-      ) : (
-        <ActivityIndicator size="large" animating={true} />
-      )} */}
+          Settings
+        </Text>
+      </View>
+
       {prefsLoaded ? (
         <View
           style={{
-            height: SCREEN_HEIGHT * 0.25,
             alignItems: 'center',
             justifyContent: 'flex-start',
             paddingTop: 0,
@@ -163,7 +116,23 @@ export default function Settings() {
             display: 'flex',
           }}
         >
-          <View style={styles.blurContainer}>
+          <View
+            style={{
+              ...styles.blurContainer,
+              backgroundColor:
+                backgroundImages[background || 'sunny'].backgroundColor + 'C0',
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 18,
+                color: 'black',
+                paddingBottom: 10,
+                fontWeight: 'bold',
+              }}
+            >
+              When do you want notifications?
+            </Text>
             <RadioList
               data={[
                 { text: 'Weekly', id: 'weekly' },
@@ -177,15 +146,26 @@ export default function Settings() {
               horizontal={false}
             />
           </View>
-          <View style={styles.blurContainer}>
-            <Text>Rate how important these factors are to you:</Text>
+          <View
+            style={{
+              ...styles.blurContainer,
+              backgroundColor:
+                backgroundImages[background || 'sunny'].backgroundColor + 'C0',
+            }}
+          >
+            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+              Rate how important these factors are to you:
+            </Text>
             {preferenceOptions.map((preferenceOption) => (
               <View key={preferenceOption}>
-                <Text>
+                <Text style={{ fontSize: 16, color: 'black', paddingTop: 15 }}>
                   {(
                     preferenceOption.charAt(0).toUpperCase() +
                     preferenceOption.slice(1)
-                  ).replace(/([A-Z])/g, ' $1')}
+                  )
+                    .replace(/([A-Z])/g, ' $1')
+                    .replace(/Of/, 'of')
+                    .slice(1)}
                 </Text>
                 <RadioList
                   key={preferenceOption}
@@ -207,24 +187,25 @@ export default function Settings() {
                 />
               </View>
             ))}
-            <Text>Set your ideal temperature:</Text>
-            {/* <Slider
-            style={{width: 200, height: 40}}
-            minimumValue={0}
-            maximumValue={1}
-            minimumTrackTintColor="#FFFFFF"
-            maximumTrackTintColor="#000000"
-          /> */}
-            <Text>Test</Text>
+            <Text
+              style={{
+                fontSize: 18,
+                paddingTop: 15,
+                fontWeight: 'bold',
+              }}
+            >
+              Set your ideal temperature (°C):
+            </Text>
             <RadioList
               data={[
+                { text: '16', id: 16 },
+                { text: '18', id: 18 },
                 { text: '20', id: 20 },
-                { text: '21', id: 21 },
                 { text: '22', id: 22 },
-                { text: '23', id: 23 },
                 { text: '24', id: 24 },
-                { text: '25', id: 25 },
                 { text: '26', id: 26 },
+                { text: '28', id: 28 },
+                { text: '30', id: 30 },
               ]}
               onSelect={(id) =>
                 onPreferenceChange({ ...preferences, idealTemperature: id })
@@ -237,7 +218,8 @@ export default function Settings() {
       ) : (
         <ActivityIndicator size="large" animating={true} />
       )}
-    </View>
+      <View style={{ height: 35 }} />
+    </ScrollView>
   );
 }
 
@@ -247,7 +229,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     width: '100%',
-    height: SCREEN_HEIGHT * 1.8,
     zIndex: -1,
   },
   backgroundImage: {
@@ -264,17 +245,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     width: '100%',
-    height: SCREEN_HEIGHT * 1.76,
     paddingTop: 0,
   },
   blurContainer: {
-    backgroundColor: 'lightgrey',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     padding: 20,
-    borderRadius: 10,
-    backdropFilter: 'blur(10px)',
-    backdropFilter: 'blur(100px)',
+    borderRadius: 15,
     marginTop: 15,
     width: SCREEN_WIDTH * 0.9,
+    fontSize: 100,
+    fontWeight: 'bold',
   },
 });

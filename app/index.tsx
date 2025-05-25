@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import {
-  Button,
   Dimensions,
   ImageBackground,
   ScrollView,
@@ -41,6 +40,7 @@ import {
 import { PuntingScore } from '@/types/punting';
 import { WeatherResponse } from '@/types/weather';
 import { useRouter } from 'expo-router';
+import { IconButton } from 'react-native-paper';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -147,9 +147,20 @@ export default function Index() {
       {/* Spacer for camera bump */}
       <View style={{ height: SCREEN_HEIGHT * 0.065 }}></View>
       {/* Container for settings button and spacer for middle info */}
-      <View style={{ height: SCREEN_HEIGHT * 0.1 }}>
-        <Button
-          title="Settings"
+      <View
+        style={{
+          height: SCREEN_HEIGHT * 0.1,
+          display: 'flex',
+          alignItems: 'flex-end',
+          width: '100%',
+        }}
+      >
+        <IconButton
+          accessibilityLabel="Settings"
+          icon="cog"
+          iconColor="grey"
+          size={40}
+          style={{ marginLeft: 'auto', marginRight: 25 }}
           onPress={() => router.navigate(`/settings?background=${background}`)}
         />
       </View>

@@ -113,7 +113,8 @@ export function getHourlyWeatherData(
 export function getAllHourlyWeatherData(
   weather: WeatherResponse | undefined,
   date: number,
-  prefs: UserPrefs | null): Record<number, HourlyWeatherData> {
+  prefs: UserPrefs | null
+): Record<number, HourlyWeatherData> {
   const hourlyData: Record<number, HourlyWeatherData> = {};
 
   if (!weather || !weather.forecast || !weather.forecast.forecastday) {
@@ -137,12 +138,22 @@ export function getBestPuntingScoreData(
   weatherData: WeatherResponse | undefined,
   prefs: UserPrefs | null
 ) {
-  if (!weatherData || !weatherData.forecast || !weatherData.forecast.forecastday) {
-    return { hour: 0, data: { puntingScore: 0, temperature: 0, rainPercent: 0, wind: 0 } };
+  if (
+    !weatherData ||
+    !weatherData.forecast ||
+    !weatherData.forecast.forecastday
+  ) {
+    return {
+      hour: 0,
+      data: { puntingScore: 0, temperature: 0, rainPercent: 0, wind: 0 },
+    };
   }
 
   if (!prefs) {
-    return { hour: 0, data: { puntingScore: 0, temperature: 0, rainPercent: 0, wind: 0 } };
+    return {
+      hour: 0,
+      data: { puntingScore: 0, temperature: 0, rainPercent: 0, wind: 0 },
+    };
   }
 
   let bestWeatherData: HourlyWeatherData = {
@@ -171,7 +182,11 @@ export function getDailyWeatherData(
 ): Record<number, Record<number, HourlyWeatherData>> | undefined {
   const dailyData: Record<number, Record<number, HourlyWeatherData>> = {};
 
-  if (!weatherData || !weatherData.forecast || !weatherData.forecast.forecastday) {
+  if (
+    !weatherData ||
+    !weatherData.forecast ||
+    !weatherData.forecast.forecastday
+  ) {
     return undefined; // Return empty if no forecast data is available
   }
 
