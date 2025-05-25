@@ -200,3 +200,30 @@ export function getDailyWeatherData(
 
   return dailyData;
 }
+
+export function getFilteredHourlyWeatherData(
+  weather: WeatherResponse | undefined,
+  dateDelta: number,
+  prefs: UserPrefs | null
+): Record<number, HourlyWeatherData> {
+  // First, get all hourly data
+  const allHourlyData = getAllHourlyWeatherData(weather, dateDelta, prefs);
+
+  // If not viewing today, or if data is undefined, return all data
+  if (dateDelta !== 0) {
+    return allHourlyData;
+  }
+
+  // Otherwise, filter to only show data from current hour onwards
+  const currentHour = new Date().getHours();
+  const filteredData: Record<number, HourlyWeatherData> = {};
+
+  // Keep only hours that are greater than or equal to the current hour
+  for (const [hour, data] of Object.entries(allHourlyData)) {
+    if (parseInt(hour) >= currentHour) {
+      filteredData[parseInt(hour)] = data;
+    }
+  }
+
+  return filteredData;
+}

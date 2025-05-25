@@ -1,89 +1,61 @@
-// Background images
-import cloudyBackground from './assets/backgrounds/cloudy background.png';
-import coldBackground from './assets/backgrounds/cold background.png';
-import nightBackground from './assets/backgrounds/night background.png';
-import noPuntBackground from './assets/backgrounds/no punting background.png';
-import rainyBackground from './assets/backgrounds/rainy background.png';
-import sunnyBackground from './assets/backgrounds/sunny_background.png';
-
-// Weather conditions
-import cloudsImage from './assets/weather/clouds.png';
-import starsImage from './assets/weather/moon + stars.png';
-import rainImage from './assets/weather/rain.png';
-import sunImage from './assets/weather/sun.png';
-import windImage from './assets/weather/wind.png';
-
-// Blobs
-import noPuntBlob from './assets/blobs/no punting blob.png';
-import puntingBlob from './assets/blobs/punting blob.png';
-import sleepingBlob from './assets/blobs/sleeping blob.png';
-
-// Blob faces
-import coldFace from './assets/face/cold.png';
-import happyFace from './assets/face/happy (sunny).png';
-import neutralFace from './assets/face/neutral-ish (cloudy or windy).png';
-import sadFace from './assets/face/no punt sad.png';
-import verySadFace from './assets/face/SAD (light rain + clouds (+ wind)).png';
-import sleepingFace from './assets/face/sleeping.png';
-
 import { PuntingScore } from './types/punting';
 
 export const backgroundImages = {
   sunny: {
-    imageImport: sunnyBackground,
+    imageImport: require('./assets/backgrounds/sunny_background.png'),
     backgroundColor: '#4ac3ad',
   },
   cloudy: {
-    imageImport: cloudyBackground,
+    imageImport: require('./assets/backgrounds/cloudy background.png'),
     backgroundColor: '#8db5bb',
   },
   rainy: {
-    imageImport: rainyBackground,
+    imageImport: require('./assets/backgrounds/rainy background.png'),
     backgroundColor: '#52869d',
   },
   cold: {
-    imageImport: coldBackground,
+    imageImport: require('./assets/backgrounds/cold background.png'),
     backgroundColor: '#a2dde9',
   },
   no_punt: {
-    imageImport: noPuntBackground,
+    imageImport: require('./assets/backgrounds/no punting background.png'),
     backgroundColor: '#86a4b1',
   },
   night: {
-    imageImport: nightBackground,
+    imageImport: require('./assets/backgrounds/night background.png'),
     backgroundColor: '#25215c',
   },
 };
 
 export const backgroundConditionImages = {
-  stars: starsImage,
-  rain: rainImage,
-  sun: sunImage,
-  wind: windImage,
-  clouds: cloudsImage,
+  stars: require('./assets/weather/moon + stars.png'),
+  rain: require('./assets/weather/rain.png'),
+  sun: require('./assets/weather/sun.png'),
+  wind: require('./assets/weather/wind.png'),
+  clouds: require('./assets/weather/clouds.png'),
 };
 
 export const blobBodyImages = {
-  punting: puntingBlob,
-  no_punt: noPuntBlob,
-  night: sleepingBlob,
+  punting: require('./assets/blobs/punting blob.png'),
+  no_punt: require('./assets/blobs/no punting blob.png'),
+  night: require('./assets/blobs/sleeping blob.png'),
 };
 
 export const blobFaceImages = {
-  cold: coldFace,
-  happy: happyFace,
-  neutral: neutralFace,
-  sad: sadFace,
-  very_sad: verySadFace,
-  sleeping: sleepingFace,
+  cold: require('./assets/face/cold.png'),
+  happy: require('./assets/face/happy (sunny).png'),
+  neutral: require('./assets/face/neutral-ish (cloudy or windy).png'),
+  sad: require('./assets/face/no punt sad.png'),
+  very_sad: require('./assets/face/SAD (light rain + clouds (+ wind)).png'),
+  sleeping: require('./assets/face/sleeping.png'),
 };
 
 export const puntingScoreColors: Record<PuntingScore, string> = {
   0: '#ff0000',
   1: '#ff0000',
-  2: '#ff0000',
+  2: '#ff9900',
   3: '#ff9900',
-  4: '#ff9900',
+  4: '#ffff00',
   5: '#ffff00',
   6: '#99ff00',
   7: '#99ff00',
@@ -95,12 +67,12 @@ export const puntingScoreColors: Record<PuntingScore, string> = {
 export const puntingScoreEmojis: Record<PuntingScore, any> = {
   0: require('./assets/puntingEmoji/NOO.png'),
   1: require('./assets/puntingEmoji/NOO.png'),
-  2: require('./assets/puntingEmoji/NOO.png'),
+  2: require('./assets/puntingEmoji/uhh.png'),
   3: require('./assets/puntingEmoji/uhh.png'),
-  4: require('./assets/puntingEmoji/uhh.png'),
+  4: require('./assets/puntingEmoji/okay.png'),
   5: require('./assets/puntingEmoji/okay.png'),
-  6: require('./assets/puntingEmoji/okay.png'),
-  7: require('./assets/puntingEmoji/good.png'),
+  6: require('./assets/puntingEmoji/sure.png'),
+  7: require('./assets/puntingEmoji/sure.png'),
   8: require('./assets/puntingEmoji/good.png'),
   9: require('./assets/puntingEmoji/good.png'),
   10: require('./assets/puntingEmoji/good.png'),

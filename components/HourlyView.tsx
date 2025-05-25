@@ -1,4 +1,4 @@
-import { puntingScoreEmojis } from '@/constants';
+import { puntingScoreColors, puntingScoreEmojis } from '@/constants';
 import { HourlyWeatherData } from '@/types/punting';
 import {
   Dimensions,
@@ -57,7 +57,14 @@ function HourlyTile(
         style={{ height: '25%', resizeMode: 'contain' }}
         source={puntingScoreEmojis[props.puntingScore]}
       />
-      <Text style={styles.tileText}>{props.puntingScore}/10</Text>
+      <Text
+        style={{
+          ...styles.tileText,
+          color: puntingScoreColors[props.puntingScore],
+        }}
+      >
+        {props.puntingScore}/10
+      </Text>
       <Text style={styles.tileText}>
         {Math.round(props.rainPercent * 100)}%💧
       </Text>
