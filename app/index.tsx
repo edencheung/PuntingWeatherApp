@@ -23,10 +23,14 @@ import {
 import { fetchWeather } from '@/lib/api';
 import {
   getBackgroundDataForDate,
-  getCurrentBackgroundData
+  getCurrentBackgroundData,
 } from '@/lib/conditions';
 import { getUserPrefs, UserPrefs } from '@/lib/preferences';
-import { getAllHourlyWeatherData, getBestPuntingScoreData, getDailyWeatherData } from '@/lib/weatherDetails';
+import {
+  getAllHourlyWeatherData,
+  getBestPuntingScoreData,
+  getDailyWeatherData,
+} from '@/lib/weatherDetails';
 import {
   BackgroundCondition,
   BackgroundData,
@@ -69,7 +73,11 @@ export default function Index() {
 
   const router = useRouter();
 
-  const { hour, data } = getBestPuntingScoreData(dateDelta, weatherData, userPrefs);
+  const { hour, data } = getBestPuntingScoreData(
+    dateDelta,
+    weatherData,
+    userPrefs
+  );
 
   const dateObj = new Date();
   dateObj.setDate(dateObj.getDate() + dateDelta);
@@ -146,17 +154,43 @@ export default function Index() {
         />
       </View>
       {/* Container for middle info */}
-      <CentralDisplay date={dateObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', })} bestTime={`${hour}:00`} puntingScore={data.puntingScore as PuntingScore} dailySummary='TODO' weatherConditionsSummary='TODO' />
+      <CentralDisplay
+        date={dateObj.toLocaleDateString(undefined, {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+        })}
+        bestTime={`${hour}:00`}
+        puntingScore={data.puntingScore as PuntingScore}
+        dailySummary="TODO"
+        weatherConditionsSummary="TODO"
+      />
       {/* Spacer for bloby */}
       <View style={{ height: SCREEN_HEIGHT * 0.47 }}></View>
       {/* Container for forecast bar */}
-      <ForecastBar dateDelta={dateDelta} setDateDelta={setDateDelta} dailyWeatherData={getDailyWeatherData(weatherData, userPrefs)} />
+      <ForecastBar
+        dateDelta={dateDelta}
+        setDateDelta={setDateDelta}
+        dailyWeatherData={getDailyWeatherData(weatherData, userPrefs)}
+      />
       {/* Punting Scores */}
       {/* Pass in hourlyWeatherData: Record<number, HourlyWeatherData> here, might want to crop the data to the current time if the user is viewing the data for today */}
-      <HourlyView hourlyWeatherData={getAllHourlyWeatherData(weatherData, dateDelta, userPrefs)} />
+      <HourlyView
+        hourlyWeatherData={getAllHourlyWeatherData(
+          weatherData,
+          dateDelta,
+          userPrefs
+        )}
+      />
       {/* Weather Graph */}
       {/* Pass in hourlyWeatherData: Record<number, HourlyWeatherData> here */}
-      <WeatherGraph hourlyWeatherData={getAllHourlyWeatherData(weatherData, dateDelta, userPrefs)} />
+      <WeatherGraph
+        hourlyWeatherData={getAllHourlyWeatherData(
+          weatherData,
+          dateDelta,
+          userPrefs
+        )}
+      />
     </ScrollView>
   );
 }
