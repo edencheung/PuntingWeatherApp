@@ -40,8 +40,8 @@ export function HelpModal({ showButton = false }: { showButton?: boolean }) {
           <Text style={{ fontSize: 22 }}>
             Welcome to our punting weather app! Choose the day you're interested
             in at the bottom, then scroll down to see more detailed information.
-            You can select your punting weather preferences in the settings.
-            Happy punting! :)
+            You can select your punting weather preferences, as well as see this
+            message again, at any time in the settings. Happy punting! :)
           </Text>
           <Button
             mode="contained"
