@@ -1,7 +1,33 @@
 import { UserPrefs } from '@/lib/preferences';
 import { HourlyWeatherData, PuntingScore } from '@/types/punting';
 import { WeatherResponse } from '@/types/weather';
-import { isNight } from '@/lib/conditions';
+
+export function isNight(weatherData: WeatherResponse): boolean {
+  if (!weatherData?.forecast?.forecastday?.length) return false;
+
+  const now = new Date();
+
+  const today = weatherData.forecast.forecastday[0];
+  const sunriseTime = today.astro.sunrise;
+  const sunsetTime = today.astro.sunset;
+
+  function parseTime(timeStr: string): Date {
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+
+    if (modifier === 'PM' && hours !== 12) hours += 12;
+    if (modifier === 'AM' && hours === 12) hours = 0;
+
+    const date = new Date(now);
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  }
+
+  const sunrise = parseTime(sunriseTime);
+  const sunset = parseTime(sunsetTime);
+
+  return now < sunrise || now > sunset;
+}
 
 function calcPuntingScore(
   temp: number,
@@ -11,7 +37,7 @@ function calcPuntingScore(
   isDay: boolean = true,
   prefs: UserPrefs
 ): PuntingScore {
-  if (!isDay){
+  if (!isDay) {
     const finalScore = 0 as PuntingScore;
     return finalScore;
   }
@@ -76,6 +102,7 @@ export function getHourlyWeatherData(
       temperature: 0,
       rainPercent: 0,
       wind: 0,
+      uv: 0,
     };
   }
 
@@ -87,6 +114,7 @@ export function getHourlyWeatherData(
       temperature: 0,
       rainPercent: 0,
       wind: 0,
+      uv: 0,
     };
   }
 
@@ -95,6 +123,7 @@ export function getHourlyWeatherData(
   const wind = targetEntry.wind_kph;
   const cloud = targetEntry.cloud;
   const precip = targetEntry.precip_mm;
+  const uv = targetEntry.uv;
   const isDay = targetEntry.is_day === 1;
 
   const puntingScore = calcPuntingScore(
@@ -111,6 +140,7 @@ export function getHourlyWeatherData(
     temperature,
     rainPercent,
     wind,
+    uv,
   };
 }
 
@@ -165,6 +195,7 @@ export function getBestPuntingScoreData(
     temperature: 0,
     rainPercent: 0,
     wind: 0,
+    uv: 0,
   };
 
   let bestHour = 0;

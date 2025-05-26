@@ -11,41 +11,15 @@ import { UserPrefs } from './preferences';
 import {
   getBestPuntingScoreData,
   getCurrentPuntingScore,
+  isNight,
 } from './weatherDetails';
 
-const noPuntingScore = 3;
+export const noPuntingScore = 3;
 const windIndicator = 15;
 
 function getColdThreshold(prefs: UserPrefs): number {
   // 5 degrees below their ideal temperature
   return prefs.idealTemperature - 5;
-}
-
-export function isNight(weatherData: WeatherResponse): boolean {
-  if (!weatherData?.forecast?.forecastday?.length) return false;
-
-  const now = new Date();
-
-  const today = weatherData.forecast.forecastday[0];
-  const sunriseTime = today.astro.sunrise;
-  const sunsetTime = today.astro.sunset;
-
-  function parseTime(timeStr: string): Date {
-    const [time, modifier] = timeStr.split(' ');
-    let [hours, minutes] = time.split(':').map(Number);
-
-    if (modifier === 'PM' && hours !== 12) hours += 12;
-    if (modifier === 'AM' && hours === 12) hours = 0;
-
-    const date = new Date(now);
-    date.setHours(hours, minutes, 0, 0);
-    return date;
-  }
-
-  const sunrise = parseTime(sunriseTime);
-  const sunset = parseTime(sunsetTime);
-
-  return now < sunrise || now > sunset;
 }
 
 function getCurrentBackgroundType(
@@ -167,7 +141,10 @@ export function getCurrentBackgroundData(
 
   return {
     backgroundType: getCurrentBackgroundType(weatherData, userPrefs),
-    backgroundConditions: getCurrentBackgroundConditions(weatherData, userPrefs),
+    backgroundConditions: getCurrentBackgroundConditions(
+      weatherData,
+      userPrefs
+    ),
     blobState: getCurrentBlobState(weatherData, userPrefs),
     blobFace: getCurrentBlobFace(weatherData, userPrefs),
   };
@@ -199,7 +176,8 @@ function getBackgroundTypeForDate(
   }
 
   if (
-    weatherData.forecast.forecastday[date].hour[hour].temp_c <= getColdThreshold(userPrefs)
+    weatherData.forecast.forecastday[date].hour[hour].temp_c <=
+    getColdThreshold(userPrefs)
   ) {
     return 'cold';
   }
@@ -220,9 +198,7 @@ function getBackgroundConditionsForDate(
     return backgroundConditions;
   }
 
-  if (
-    weatherData.forecast.forecastday[date].hour[hour].precip_mm > 0
-  ) {
+  if (weatherData.forecast.forecastday[date].hour[hour].precip_mm > 0) {
     backgroundConditions.push('rain');
     backgroundConditions.push('clouds');
   } else if (
@@ -270,7 +246,10 @@ function getBlobFaceForDate(
     return 'sad';
   }
 
-  if (weatherData.forecast.forecastday[date].hour[hour].temp_c <= getColdThreshold(userPrefs)) {
+  if (
+    weatherData.forecast.forecastday[date].hour[hour].temp_c <=
+    getColdThreshold(userPrefs)
+  ) {
     return 'cold';
   }
 
@@ -278,7 +257,10 @@ function getBlobFaceForDate(
     return 'very_sad';
   }
 
-  if (weatherData.forecast.forecastday[date].hour[hour].condition.text === 'Cloudy') {
+  if (
+    weatherData.forecast.forecastday[date].hour[hour].condition.text ===
+    'Cloudy'
+  ) {
     return 'neutral';
   }
 
@@ -301,7 +283,11 @@ export function getBackgroundDataForDate(
 
   return {
     backgroundType: getBackgroundTypeForDate(weatherData, date, userPrefs),
-    backgroundConditions: getBackgroundConditionsForDate(weatherData, date, userPrefs),
+    backgroundConditions: getBackgroundConditionsForDate(
+      weatherData,
+      date,
+      userPrefs
+    ),
     blobState: getBlobStateForDate(weatherData, date, userPrefs),
     blobFace: getBlobFaceForDate(weatherData, date, userPrefs),
   };
@@ -313,10 +299,12 @@ export function getOverallSummary(
   userPrefs: UserPrefs
 ): WeatherSummary {
   return {
-    bestTime: "best hour: " + getBestPuntingScoreData(date, weatherData, userPrefs).hour,
-    description: "TODO desc",
-    temperatureRange: "TODO temp",
-    windDescription: "TODO wind",
-    weatherDescription: "TODO weather",
-  }
+    bestTime:
+      'best hour: ' +
+      getBestPuntingScoreData(date, weatherData, userPrefs).hour,
+    description: 'TODO desc',
+    temperatureRange: 'TODO temp',
+    windDescription: 'TODO wind',
+    weatherDescription: 'TODO weather',
+  };
 }

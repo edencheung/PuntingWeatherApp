@@ -13,4 +13,5 @@ export type HourlyWeatherData = {
   temperature: number;
   rainPercent: number;
   wind: number;
+  uv: number;
 };
