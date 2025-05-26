@@ -37,7 +37,7 @@ export function HelpModal({ showButton = false }: { showButton?: boolean }) {
             borderRadius: 30,
           }}
         >
-          <Text style={{ fontSize: 22 }}>
+          <Text style={{ fontSize: 20 }}>
             Welcome to our punting weather app! Choose the day you're interested
             in at the bottom, then scroll down to see more detailed information.
             You can select your punting weather preferences, as well as see this
