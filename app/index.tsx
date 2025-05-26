@@ -1,8 +1,7 @@
 // This file is the main page of our app
 
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Dimensions,
   ImageBackground,
@@ -25,6 +24,7 @@ import { fetchWeather } from '@/lib/api';
 import {
   getBackgroundDataForDate,
   getCurrentBackgroundData,
+  noPuntingScore,
 } from '@/lib/conditions';
 import { getUserPrefs, UserPrefs } from '@/lib/preferences';
 import {
@@ -82,14 +82,24 @@ export default function Index() {
 
   const router = useRouter();
 
-  let displayHour = getBestPuntingScoreData(dateDelta, weatherData, userPrefs).hour;
+  let displayHour = getBestPuntingScoreData(
+    dateDelta,
+    weatherData,
+    userPrefs
+  ).hour;
   let displayScore = 0;
 
   if (weatherData && userPrefs) {
-    if (dateDelta === 0) { //if today, use hourly data
+    if (dateDelta === 0) {
+      //if today, use hourly data
       displayScore = getCurrentPuntingScore(weatherData, userPrefs);
-    } else { //if forecasted day, use best punting score data
-      const data = getBestPuntingScoreData(dateDelta, weatherData, userPrefs).data;
+    } else {
+      //if forecasted day, use best punting score data
+      const data = getBestPuntingScoreData(
+        dateDelta,
+        weatherData,
+        userPrefs
+      ).data;
       displayScore = data.puntingScore;
     }
   }
@@ -115,6 +125,54 @@ export default function Index() {
     setBlobState(data.blobState as BlobState);
     setBlobFace(data.blobFace as BlobFace);
   }, [weatherData, userPrefs, dateDelta]);
+
+  const dailySummary =
+    displayScore < noPuntingScore
+      ? 'No punting today :('
+      : displayScore < 5
+      ? 'Maybe stay at home?'
+      : displayScore < 8
+      ? 'Pleasant but not perfect...'
+      : 'Brilliant day for punting!';
+
+  const filteredData = getFilteredHourlyWeatherData(
+    weatherData,
+    dateDelta,
+    userPrefs
+  );
+  const temps = Object.values(filteredData).map((x) => x.temperature);
+  const tempRange = `${Math.round(Math.min(...temps))}-${Math.round(
+    Math.max(...temps)
+  )}`;
+  const windsAverage =
+    Object.values(filteredData).reduce(
+      (partialSum, a) => partialSum + a.wind,
+      0
+    ) / Object.keys(filteredData).length;
+  const windSummary =
+    windsAverage < 5
+      ? 'Calm'
+      : windsAverage < 20
+      ? 'Light breeze'
+      : windsAverage < 35
+      ? 'Breezy'
+      : 'Windy';
+  const uvAverage = // *2 to to take into account night
+    (2 *
+      Object.values(filteredData).reduce(
+        (partialSum, a) => partialSum + a.uv,
+        0
+      )) /
+    Object.keys(filteredData).length;
+  const sunSummary =
+    uvAverage < 1
+      ? 'Not sunny'
+      : uvAverage < 4
+      ? 'Slightly sunny'
+      : uvAverage < 6
+      ? 'Sunny'
+      : 'Very sunny';
+  const weatherConditionsSummary = `${tempRange}°C | ${windSummary} | ${sunSummary}`;
 
   return (
     <ScrollView
@@ -188,8 +246,8 @@ export default function Index() {
         })}
         bestTime={`${displayHour}:00`}
         puntingScore={displayScore as PuntingScore}
-        dailySummary="TODO"
-        weatherConditionsSummary="TODO"
+        dailySummary={dailySummary}
+        weatherConditionsSummary={weatherConditionsSummary}
       />
       {/* Spacer for bloby */}
       <View style={{ height: SCREEN_HEIGHT * 0.47 }}></View>

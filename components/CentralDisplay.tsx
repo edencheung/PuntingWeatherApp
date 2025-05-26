@@ -36,7 +36,7 @@ export function CentralDisplay({
         {puntingScore}/10
       </Text>
       <Text style={{ fontSize: 24, color: 'black' }}>{dailySummary}</Text>
-      <Text style={{ fontSize: 24, color: 'black' }}>
+      <Text style={{ fontSize: 22, color: 'black' }}>
         {weatherConditionsSummary}
       </Text>
     </View>
