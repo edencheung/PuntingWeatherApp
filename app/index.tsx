@@ -12,6 +12,7 @@ import {
 
 import { CentralDisplay } from '@/components/CentralDisplay';
 import { ForecastBar } from '@/components/ForecastBar';
+import { HelpModal } from '@/components/HelpModal';
 import { HourlyView } from '@/components/HourlyView';
 import { WeatherGraph } from '@/components/WeatherGraph';
 import {
@@ -195,6 +196,9 @@ export default function Index() {
           }}
         />
       </View>
+
+      <HelpModal />
+
       {/* Background conditions */}
       {backgroundConditions.map((condition, index) => (
         <View style={styles.backgroundContainer} key={index}>

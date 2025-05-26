@@ -42,7 +42,7 @@ export function HourlyView({
 }
 
 function HourlyTile(
-  props: HourlyWeatherData & {
+  props: Omit<HourlyWeatherData, 'uv'> & {
     hour: number;
   }
 ) {

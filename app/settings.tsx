@@ -15,6 +15,7 @@ import RadioList from '@/components/RadioList';
 import { backgroundImages } from '@/constants';
 import { getUserPrefs, updateUserPrefs, UserPrefs } from '@/lib/preferences';
 
+import { HelpModal } from '@/components/HelpModal';
 import { BackgroundType } from '@/types/background';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -86,16 +87,28 @@ export default function Settings() {
 
       {/* Container for settings button and spacer for middle info */}
       <View style={{ left: 0, marginBottom: 20, width: '100%' }}>
-        <Button
-          mode="contained"
-          icon="arrow-left"
-          buttonColor={backgroundImages[background || 'sunny'].backgroundColor}
-          //onPress={() => router.navigate('/')}
-          onPress={() => router.back()}
-          style={{ marginLeft: 15, marginRight: 'auto' }}
+        <View
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            flexDirection: 'row',
+          }}
         >
-          Home
-        </Button>
+          <View style={{ marginLeft: 20 }}>
+            <Button
+              mode="contained"
+              icon="arrow-left"
+              buttonColor={
+                backgroundImages[background || 'sunny'].backgroundColor
+              }
+              onPress={() => router.back()}
+            >
+              Home
+            </Button>
+          </View>
+          <HelpModal showButton />
+        </View>
         <Text
           style={{
             fontSize: 48,
