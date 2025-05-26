@@ -52,9 +52,16 @@ export function ForecastBar({
                 date={label}
                 rating={
                   Math.max(
-                    ...Object.values(
+                    ...Object.entries(
                       dailyWeatherData?.[i] ?? generateMockData()
-                    ).map((hourly) => hourly?.puntingScore ?? 0)
+                    )
+                      .filter(([hour, hourly]) => {
+                        if (dateDelta !== 0) return true;
+                        else if (parseInt(hour) === new Date().getHours())
+                          return true;
+                        else return false;
+                      })
+                      .map(([hour, hourly]) => hourly?.puntingScore ?? 0)
                   ) as PuntingScore
                 }
                 dateDelta={dateDelta}
