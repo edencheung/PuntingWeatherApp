@@ -15,7 +15,11 @@ import {
 
 const noPuntingScore = 3;
 const windIndicator = 15;
-const coldIndicator = 8;
+
+function getColdThreshold(prefs: UserPrefs): number {
+  // 5 degrees below their ideal temperature
+  return prefs.idealTemperature - 5;
+}
 
 export function isNight(weatherData: WeatherResponse): boolean {
   if (!weatherData?.forecast?.forecastday?.length) return false;
@@ -66,7 +70,7 @@ function getCurrentBackgroundType(
     return 'cloudy';
   }
 
-  if (weatherData.current.temp_c <= coldIndicator) {
+  if (weatherData.current.temp_c <= getColdThreshold(userPrefs)) {
     return 'cold';
   }
 
@@ -133,12 +137,12 @@ function getCurrentBlobFace(
     return 'sad';
   }
 
-  if (weatherData.current.precip_mm > 0) {
-    return 'very_sad';
+  if (weatherData.current.temp_c <= getColdThreshold(userPrefs)) {
+    return 'cold';
   }
 
-  if (weatherData.current.temp_c <= coldIndicator) {
-    return 'cold';
+  if (weatherData.current.precip_mm > 0) {
+    return 'very_sad';
   }
 
   if (weatherData.current.condition.text === 'Cloudy') {
@@ -182,7 +186,7 @@ function getBackgroundTypeForDate(
   }
 
   // check for current rain
-  if (weatherData.forecast.forecastday[date].hour[hour].will_it_rain === 1) {
+  if (weatherData.forecast.forecastday[date].hour[hour].precip_mm > 0) {
     return 'rainy';
   }
 
@@ -195,7 +199,7 @@ function getBackgroundTypeForDate(
   }
 
   if (
-    weatherData.forecast.forecastday[date].hour[hour].temp_c <= coldIndicator
+    weatherData.forecast.forecastday[date].hour[hour].temp_c <= getColdThreshold(userPrefs)
   ) {
     return 'cold';
   }
@@ -266,12 +270,12 @@ function getBlobFaceForDate(
     return 'sad';
   }
 
-  if (weatherData.forecast.forecastday[date].hour[hour].precip_mm > 0) {
-    return 'very_sad';
+  if (weatherData.forecast.forecastday[date].hour[hour].temp_c <= getColdThreshold(userPrefs)) {
+    return 'cold';
   }
 
-  if (weatherData.forecast.forecastday[date].hour[hour].temp_c <= coldIndicator) {
-    return 'cold';
+  if (weatherData.forecast.forecastday[date].hour[hour].precip_mm > 0) {
+    return 'very_sad';
   }
 
   if (weatherData.forecast.forecastday[date].hour[hour].condition.text === 'Cloudy') {
