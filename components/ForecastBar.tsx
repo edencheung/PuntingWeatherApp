@@ -56,7 +56,7 @@ export function ForecastBar({
                       dailyWeatherData?.[i] ?? generateMockData()
                     )
                       .filter(([hour, hourly]) => {
-                        if (dateDelta !== 0) return true;
+                        if (i !== 0) return true;
                         else if (parseInt(hour) === new Date().getHours())
                           return true;
                         else return false;

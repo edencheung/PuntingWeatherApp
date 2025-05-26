@@ -10,6 +10,7 @@ export type CentralDisplayProps = {
   puntingScore?: PuntingScore;
   dailySummary?: string;
   weatherConditionsSummary?: string;
+  fontColor?: 'white' | 'black';
 };
 
 export function CentralDisplay({
@@ -18,6 +19,7 @@ export function CentralDisplay({
   puntingScore = 10,
   dailySummary = 'A great day for punting!',
   weatherConditionsSummary = '22-25°C | Calm winds | Sunny',
+  fontColor = 'black',
 }: CentralDisplayProps) {
   return (
     <View
@@ -29,14 +31,14 @@ export function CentralDisplay({
         backgroundColor: 'transparent',
       }}
     >
-      <Text style={{ fontSize: 24, color: 'black' }}>
+      <Text style={{ fontSize: 24, color: fontColor }}>
         {date} | Best time {bestTime}
       </Text>
       <Text style={{ fontSize: 60, color: puntingScoreColors[puntingScore] }}>
         {puntingScore}/10
       </Text>
-      <Text style={{ fontSize: 24, color: 'black' }}>{dailySummary}</Text>
-      <Text style={{ fontSize: 22, color: 'black' }}>
+      <Text style={{ fontSize: 24, color: fontColor }}>{dailySummary}</Text>
+      <Text style={{ fontSize: 22, color: fontColor }}>
         {weatherConditionsSummary}
       </Text>
     </View>

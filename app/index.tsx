@@ -239,6 +239,7 @@ export default function Index() {
       </View>
       {/* Container for middle info */}
       <CentralDisplay
+        fontColor={background === 'night' ? 'white' : 'black'}
         date={dateObj.toLocaleDateString(undefined, {
           weekday: 'short',
           month: 'short',
