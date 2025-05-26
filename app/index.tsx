@@ -127,9 +127,9 @@ export default function Index() {
   }, [weatherData, userPrefs, dateDelta]);
 
   const dailySummary =
-    displayScore < noPuntingScore
+    displayScore <= noPuntingScore
       ? 'No punting today :('
-      : displayScore < 5
+      : displayScore <= 5
       ? 'Maybe stay at home?'
       : displayScore < 8
       ? 'Pleasant but not perfect...'
@@ -166,9 +166,9 @@ export default function Index() {
     Object.keys(filteredData).length;
   const sunSummary =
     uvAverage < 1
-      ? 'Not sunny'
+      ? 'Cloudy'
       : uvAverage < 4
-      ? 'Slightly sunny'
+      ? 'Partly cloudy'
       : uvAverage < 6
       ? 'Sunny'
       : 'Very sunny';
