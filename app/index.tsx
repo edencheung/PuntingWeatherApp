@@ -28,6 +28,7 @@ import { getUserPrefs, UserPrefs } from '@/lib/preferences';
 import {
   getAllHourlyWeatherData,
   getBestPuntingScoreData,
+  getCurrentPuntingScore,
   getDailyWeatherData,
   getFilteredHourlyWeatherData,
 } from '@/lib/weatherDetails';
@@ -74,11 +75,17 @@ export default function Index() {
 
   const router = useRouter();
 
-  const { hour, data } = getBestPuntingScoreData(
-    dateDelta,
-    weatherData,
-    userPrefs
-  );
+  let displayHour = getBestPuntingScoreData(dateDelta, weatherData, userPrefs).hour;
+  let displayScore = 0;
+
+  if (weatherData && userPrefs) {
+    if (dateDelta === 0) { //if today, use hourly data
+      displayScore = getCurrentPuntingScore(weatherData, userPrefs);
+    } else { //if forecasted day, use best punting score data
+      const data = getBestPuntingScoreData(dateDelta, weatherData, userPrefs).data;
+      displayScore = data.puntingScore;
+    }
+  }
 
   const dateObj = new Date();
   dateObj.setDate(dateObj.getDate() + dateDelta);
@@ -172,8 +179,8 @@ export default function Index() {
           month: 'short',
           day: 'numeric',
         })}
-        bestTime={`${hour}:00`}
-        puntingScore={data.puntingScore as PuntingScore}
+        bestTime={`${displayHour}:00`}
+        puntingScore={displayScore as PuntingScore}
         dailySummary="TODO"
         weatherConditionsSummary="TODO"
       />

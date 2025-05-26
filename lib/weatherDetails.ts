@@ -1,6 +1,7 @@
 import { UserPrefs } from '@/lib/preferences';
 import { HourlyWeatherData, PuntingScore } from '@/types/punting';
 import { WeatherResponse } from '@/types/weather';
+import { isNight } from '@/lib/conditions';
 
 function calcPuntingScore(
   temp: number,
@@ -10,7 +11,10 @@ function calcPuntingScore(
   isDay: boolean = true,
   prefs: UserPrefs
 ): PuntingScore {
-  if (!isDay) return 0 as PuntingScore;
+  if (!isDay){
+    const finalScore = 0 as PuntingScore;
+    return finalScore;
+  }
   const {
     presenceOfSun,
     calmWinds,
@@ -52,7 +56,7 @@ export function getCurrentPuntingScore(
   const precip = weatherData.current.precip_mm; // mm
   const wind = weatherData.current.wind_kph; // km/h or m/s (confirm units!)
   const cloud = weatherData.current.cloud; // percentage (0–100)
-  const isDay = weatherData.current.is_day === 1;
+  const isDay = isNight(weatherData) ? false : true;
 
   return calcPuntingScore(temp, precip, wind, cloud, isDay, prefs);
 }
