@@ -60,13 +60,14 @@ function HourlyTile(
       <Text
         style={{
           ...styles.tileText,
+          fontSize: 25,
           color: puntingScoreColors[props.puntingScore],
         }}
       >
         {props.puntingScore}/10
       </Text>
       <Text style={styles.tileText}>
-        {Math.round(props.rainPercent * 100)}%💧
+        {Math.round(props.rainPercent * 100)}%🌧️
       </Text>
       <Text style={styles.tileText}>{props.temperature}°C</Text>
       <Text style={styles.tileText}>{props.wind}mph</Text>
@@ -97,6 +98,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   tileText: {
-    fontSize: 20,
+    fontSize: 14,
   },
 });

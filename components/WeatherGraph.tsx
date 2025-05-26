@@ -102,9 +102,22 @@ export function WeatherGraph({
     }
   };
 
+  const getUnits = (): string => {
+    switch (selectedTab) {
+      case 'temperature':
+        return '°C';
+      case 'wind':
+        return 'mph';
+      case 'rain':
+        return '%';
+      default:
+        return '';
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>24-Hour Weather Forecast</Text>
+      {/* <Text style={styles.title}>24-Hour Weather Forecast</Text> */}
       <View style={styles.tabContainer}>
         <Pressable
           style={[
@@ -185,7 +198,9 @@ export function WeatherGraph({
                     key={i}
                     style={[styles.yAxisTick, { bottom: `${ratio * 100}%` }]}
                   >
-                    <Text style={styles.yAxisLabel}>{Math.round(value)}</Text>
+                    <Text style={styles.yAxisLabel}>
+                      {Math.round(value) + getUnits()}
+                    </Text>
                   </View>
                 );
               })}
@@ -210,7 +225,7 @@ export function WeatherGraph({
                   style={[styles.xAxisTick, { left: `${i * 25}%` }]}
                 >
                   <Text style={styles.xAxisLabel}>
-                    {hour.toString().padStart(2, '0') + ':00'}
+                    {hour.toString().padStart(2, '0')}
                   </Text>
                 </View>
               ))}
@@ -257,7 +272,7 @@ const styles = StyleSheet.create({
     width: 1,
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10,
@@ -279,7 +294,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   tabText: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: '500',
   },
   selectedTabText: {
@@ -331,8 +346,10 @@ const styles = StyleSheet.create({
   },
   yAxisLabel: {
     position: 'absolute',
-    right: 30,
-    fontSize: 12,
+    right: 20,
+    fontSize: 13,
+    width: 50,
+    textAlign: 'right',
     color: '#555',
   },
   xAxis: {
@@ -361,9 +378,10 @@ const styles = StyleSheet.create({
   xAxisLabel: {
     position: 'absolute',
     top: 5,
-    fontSize: 12,
+    fontSize: 15,
+    wordWrap: 'overflow',
     color: '#555',
-    width: 35,
+    width: 30,
     textAlign: 'center',
     left: -15,
   },

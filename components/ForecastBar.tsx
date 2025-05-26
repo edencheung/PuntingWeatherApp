@@ -125,6 +125,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   ratingText: {
-    fontSize: 30,
+    fontSize: 28,
   },
 });
