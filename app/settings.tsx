@@ -56,9 +56,11 @@ export default function Settings() {
   }, []);
 
   useEffect(() => {
-    updateUserPrefs(preferences).catch((e) =>
-      console.log('Error updating user prefs: ', e)
-    );
+    if (prefsLoaded) {
+      updateUserPrefs(preferences).catch((e) =>
+        console.log('Error updating user prefs: ', e)
+      );
+    }
   }, [preferences]);
 
   const router = useRouter();
@@ -88,7 +90,8 @@ export default function Settings() {
           mode="contained"
           icon="arrow-left"
           buttonColor={backgroundImages[background || 'sunny'].backgroundColor}
-          onPress={() => router.navigate('/')}
+          //onPress={() => router.navigate('/')}
+          onPress={() => router.back()}
           style={{ marginLeft: 15, marginRight: 'auto' }}
         >
           Home
