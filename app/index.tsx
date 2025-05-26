@@ -1,5 +1,7 @@
 // This file is the main page of our app
 
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 import { useEffect, useState } from 'react';
 import {
   Dimensions,
@@ -67,6 +69,11 @@ export default function Index() {
         });
     }
   }, [weatherData]);
+  useFocusEffect(
+    useCallback(() => {
+      getUserPrefs().then(setUserPrefs);
+    }, [])
+  );
 
   const [userPrefs, setUserPrefs] = useState<UserPrefs | null>(null);
   useEffect(() => {

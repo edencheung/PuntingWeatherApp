@@ -25,7 +25,7 @@ export default function RadioList<T extends number | string>({
           }}
           key={item.id}
         >
-          <RadioButton
+          <RadioButton.Android
             value={item.text}
             status={selectedId === item.id ? 'checked' : 'unchecked'}
             onPress={() => onSelect(item.id)}
