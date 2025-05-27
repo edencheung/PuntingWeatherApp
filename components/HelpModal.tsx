@@ -37,7 +37,7 @@ export function HelpModal({ showButton = false }: { showButton?: boolean }) {
             borderRadius: 30,
           }}
         >
-          <Text style={{ fontSize: 20 }}>
+          <Text style={{ fontSize: 20 , fontFamily: 'Quicksand-Bold' }}>
             Welcome to our punting weather app! Choose the day you're interested
             in at the bottom, then scroll down to see more detailed information.
             You can select your punting weather preferences, as well as see this
@@ -46,7 +46,7 @@ export function HelpModal({ showButton = false }: { showButton?: boolean }) {
           <Button
             mode="contained"
             style={{ marginTop: 30, padding: 5 }}
-            labelStyle={{ fontSize: 18 }}
+            labelStyle={{ fontSize: 18 , fontFamily: 'Quicksand-Bold' }}
             onPress={() => setVisible(false)}
           >
             Get started

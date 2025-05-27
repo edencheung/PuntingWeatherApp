@@ -95,13 +95,14 @@ export default function Settings() {
             flexDirection: 'row',
           }}
         >
-          <View style={{ marginLeft: 20 }}>
+          <View style={{ marginLeft: 20}}>
             <Button
               mode="contained"
               icon="arrow-left"
               buttonColor={
                 backgroundImages[background || 'sunny'].backgroundColor
               }
+              labelStyle={{ fontSize: 16, fontFamily: 'Quicksand-Bold' }}
               onPress={() => router.back()}
             >
               Home
@@ -116,6 +117,7 @@ export default function Settings() {
             marginTop: 10,
             marginLeft: 'auto',
             marginRight: 'auto',
+            fontFamily: 'Quicksand-Bold',
           }}
         >
           Settings
@@ -145,6 +147,7 @@ export default function Settings() {
                 color: 'black',
                 paddingBottom: 10,
                 fontWeight: 'bold',
+                fontFamily: 'Quicksand-Bold',
               }}
             >
               When do you want notifications?
@@ -169,12 +172,12 @@ export default function Settings() {
                 backgroundImages[background || 'sunny'].backgroundColor + 'C0',
             }}
           >
-            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold' , fontFamily: 'Quicksand-Bold'}}>
               Rate how important these factors are to you:
             </Text>
             {preferenceOptions.map((preferenceOption) => (
               <View key={preferenceOption}>
-                <Text style={{ fontSize: 16, color: 'black', paddingTop: 15 }}>
+                <Text style={{ fontSize: 16, color: 'black', paddingTop: 15 , fontFamily: 'Quicksand-Bold'}}>
                   {(
                     preferenceOption.charAt(0).toUpperCase() +
                     preferenceOption.slice(1)
@@ -208,6 +211,7 @@ export default function Settings() {
                 fontSize: 18,
                 paddingTop: 15,
                 fontWeight: 'bold',
+                fontFamily: 'Quicksand-Bold',
               }}
             >
               Set your ideal temperature (°C):

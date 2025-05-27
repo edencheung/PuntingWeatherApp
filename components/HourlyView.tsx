@@ -96,8 +96,10 @@ const styles = StyleSheet.create({
   },
   hourText: {
     fontSize: 20,
+    fontFamily: 'Quicksand-Bold',
   },
   tileText: {
     fontSize: 14,
+    fontFamily: 'Quicksand-Bold',
   },
 });

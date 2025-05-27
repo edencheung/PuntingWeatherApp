@@ -130,8 +130,10 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 20,
+    fontFamily: 'Quicksand-Bold',
   },
   ratingText: {
     fontSize: 28,
+    fontFamily: 'Quicksand-Bold',
   },
 });

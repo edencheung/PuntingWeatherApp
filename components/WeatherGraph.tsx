@@ -276,6 +276,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10,
+    fontFamily: 'Quicksand-Bold',
   },
   tabContainer: {
     flexDirection: 'row',
@@ -296,9 +297,11 @@ const styles = StyleSheet.create({
   tabText: {
     fontSize: 14,
     fontWeight: '500',
+    fontFamily: 'Quicksand-Bold',
   },
   selectedTabText: {
     fontWeight: 'bold',
+    fontFamily: 'Quicksand-Bold',
   },
   graphContainer: {
     flex: 0.95,
@@ -351,6 +354,7 @@ const styles = StyleSheet.create({
     width: 50,
     textAlign: 'right',
     color: '#555',
+    fontFamily: 'Quicksand-Bold',
   },
   xAxis: {
     position: 'absolute',
@@ -384,5 +388,6 @@ const styles = StyleSheet.create({
     width: 30,
     textAlign: 'center',
     left: -15,
+    fontFamily: 'Quicksand-Bold',
   },
 });

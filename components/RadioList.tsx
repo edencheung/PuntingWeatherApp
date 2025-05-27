@@ -35,6 +35,7 @@ export default function RadioList<T extends number | string>({
               fontSize: horizontal ? 15 : 18,
               color: horizontal ? '#444444' : 'black',
               marginTop: -4,
+              fontFamily: 'Quicksand-Bold',
             }}
           >
             {item.text}

@@ -1,6 +1,6 @@
 import { puntingScoreColors } from '@/constants';
 import { PuntingScore } from '@/types/punting';
-import { Dimensions, Text, View } from 'react-native';
+import { Dimensions, Text, View, StyleSheet } from 'react-native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -22,25 +22,47 @@ export function CentralDisplay({
   fontColor = 'black',
 }: CentralDisplayProps) {
   return (
-    <View
-      style={{
-        height: SCREEN_HEIGHT * 0.25,
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        paddingTop: 0,
-        backgroundColor: 'transparent',
-      }}
-    >
-      <Text style={{ fontSize: 24, color: fontColor }}>
+    <View style={styles.container}>
+      <Text style={[styles.text, { color: fontColor }]}>
         {date} | Best time {bestTime}
       </Text>
-      <Text style={{ fontSize: 60, color: puntingScoreColors[puntingScore] }}>
+      <Text
+        style={[
+          styles.score,
+          { color: puntingScoreColors[puntingScore], fontFamily: 'CherryBomb-Regular' },
+        ]}
+      >
         {puntingScore}/10
       </Text>
-      <Text style={{ fontSize: 24, color: fontColor }}>{dailySummary}</Text>
-      <Text style={{ fontSize: 22, color: fontColor }}>
+      <Text style={[styles.text, { color: fontColor }]}>{dailySummary}</Text>
+      <Text style={[styles.subtext, { color: fontColor }]}>
         {weatherConditionsSummary}
       </Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    height: SCREEN_HEIGHT * 0.25,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 0,
+    backgroundColor: 'transparent',
+  },
+  text: {
+    fontSize: 24,
+    fontFamily: 'Quicksand-Bold',
+    marginBottom: -17,
+  },
+  subtext: {
+    fontSize: 20,
+    fontFamily: 'Quicksand-Bold',
+    marginTop: 19,
+  },
+  score: {
+    fontSize: 70,
+    fontFamily: 'CherryBomb-Regular',
+    marginBottom: -7,
+  },
+});
