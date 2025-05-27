@@ -46,7 +46,6 @@ import { WeatherResponse } from '@/types/weather';
 import { useRouter } from 'expo-router';
 import { IconButton } from 'react-native-paper';
 
-
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function Index() {
