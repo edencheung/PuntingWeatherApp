@@ -154,10 +154,10 @@ export default function Index() {
     windsAverage < 5
       ? 'Calm'
       : windsAverage < 20
-      ? 'Light breeze'
-      : windsAverage < 35
       ? 'Breezy'
-      : 'Windy';
+      : windsAverage < 35
+      ? 'Windy'
+      : 'Very windy';
   const uvAverage = // *2 to to take into account night
     (2 *
       Object.values(filteredData).reduce(
