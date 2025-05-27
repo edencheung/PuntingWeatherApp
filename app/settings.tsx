@@ -95,13 +95,11 @@ export default function Settings() {
             flexDirection: 'row',
           }}
         >
-          <View style={{ marginLeft: 20}}>
+          <View style={{ marginLeft: 20 }}>
             <Button
               mode="contained"
               icon="arrow-left"
-              buttonColor={
-                backgroundImages[background || 'sunny'].backgroundColor
-              }
+              buttonColor="rgba(255, 255, 255, 0.9)"
               labelStyle={{ fontSize: 16, fontFamily: 'Quicksand-Bold' }}
               onPress={() => router.back()}
             >
@@ -137,8 +135,7 @@ export default function Settings() {
           <View
             style={{
               ...styles.blurContainer,
-              backgroundColor:
-                backgroundImages[background || 'sunny'].backgroundColor + 'C0',
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
             }}
           >
             <Text
@@ -168,16 +165,28 @@ export default function Settings() {
           <View
             style={{
               ...styles.blurContainer,
-              backgroundColor:
-                backgroundImages[background || 'sunny'].backgroundColor + 'C0',
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
             }}
           >
-            <Text style={{ fontSize: 18, fontWeight: 'bold' , fontFamily: 'Quicksand-Bold'}}>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: 'bold',
+                fontFamily: 'Quicksand-Bold',
+              }}
+            >
               Rate how important these factors are to you:
             </Text>
             {preferenceOptions.map((preferenceOption) => (
               <View key={preferenceOption}>
-                <Text style={{ fontSize: 16, color: 'black', paddingTop: 15 , fontFamily: 'Quicksand-Bold'}}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: 'black',
+                    paddingTop: 15,
+                    fontFamily: 'Quicksand-Bold',
+                  }}
+                >
                   {(
                     preferenceOption.charAt(0).toUpperCase() +
                     preferenceOption.slice(1)
